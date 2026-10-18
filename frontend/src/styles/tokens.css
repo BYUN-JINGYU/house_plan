@@ -1,0 +1,74 @@
+/* 색·글꼴 토큰. 통장 장부: 연한 종이, 괘선, 오른쪽 정렬 금액, 판정은 붉은 도장 하나 */
+:root {
+  color-scheme: light;
+  --paper: #f3f6f3;
+  --sheet: #fbfcfa;
+  --ink: #16211d;
+  --ink-2: #4a5852;
+  --muted: #5d6a64;
+  --rule: #d8e0db;
+  --rule-strong: #b2c0b8;
+  --accent: #0d6a5a;
+  --accent-ink: #ffffff;
+  --accent-wash: #e1eee8;
+  --seal: #c23a2c;
+  --good: #1b7a39;
+  --bad: #b3261e;
+  --bar: #aebdb5;
+  --shadow: rgba(22, 33, 29, 0.12);
+  /* 그래프 계열색 (검증: 인접 색약 ΔE ≥ 9.1). s3·s4는 밝아서 값 글자를 항상 같이 보여 준다 */
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --font-display: "Gowun Batang", "Nanum Myeongjo", "AppleMyungjo", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0e1412;
+    --sheet: #151c19;
+    --ink: #e6ede9;
+    --ink-2: #b2bfb9;
+    --muted: #8b9992;
+    --rule: #26302c;
+    --rule-strong: #3a4842;
+    --accent: #4cb8a1;
+    --accent-ink: #06231d;
+    --accent-wash: #17302a;
+    --seal: #e85d4e;
+    --good: #55c97a;
+    --bad: #f2786d;
+    --bar: #43524b;
+    --shadow: rgba(0, 0, 0, 0.5);
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0e1412;
+  --sheet: #151c19;
+  --ink: #e6ede9;
+  --ink-2: #b2bfb9;
+  --muted: #8b9992;
+  --rule: #26302c;
+  --rule-strong: #3a4842;
+  --accent: #4cb8a1;
+  --accent-ink: #06231d;
+  --accent-wash: #17302a;
+  --seal: #e85d4e;
+  --good: #55c97a;
+  --bad: #f2786d;
+  --bar: #43524b;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --s1: #3987e5;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+}

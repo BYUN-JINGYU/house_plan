@@ -1,0 +1,12 @@
+node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.db
+.env
+
+# 개인 숫자가 든 파일은 올리지 않는다
+houseplan-backup-*.json
+*초기값*.json

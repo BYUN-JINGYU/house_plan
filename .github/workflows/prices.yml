@@ -1,0 +1,28 @@
+# 평일 장 마감 뒤 시세를 미리 받아 둔다 (잠든 무료 서버도 깨운다)
+# 저장소 Settings → Secrets and variables → Actions 에 APP_URL, CRON_TOKEN 을 넣으면 동작
+name: prices
+
+on:
+  schedule:
+    - cron: "10 7 * * 1-5" # 16:10 KST, 국내 장 마감 뒤
+    - cron: "30 21 * * 1-5" # 06:30 KST, 미국 장 마감 뒤
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 시세 새로고침
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_TOKEN: ${{ secrets.CRON_TOKEN }}
+        run: |
+          if [ -z "$APP_URL" ] || [ -z "$CRON_TOKEN" ]; then
+            echo "APP_URL, CRON_TOKEN 비밀값이 없어서 건너뜁니다."
+            exit 0
+          fi
+          # 공개 저장소라 응답 내용은 기록에 남기지 않는다
+          curl -fsS --retry 5 --retry-delay 20 --retry-all-errors --max-time 120 \
+            -o /dev/null -w "HTTP %{http_code}\n" \
+            -X POST "$APP_URL/api/quotes/refresh" \
+            -H "Authorization: Bearer $CRON_TOKEN"

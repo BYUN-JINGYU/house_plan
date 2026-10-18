@@ -1,0 +1,9 @@
+[project]
+name = "houseplan-backend"
+version = "1.0.0"
+description = "우리 집 자금 계획: 로그인, 저장, 가계부, 시세 API"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
