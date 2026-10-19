@@ -1,4 +1,4 @@
-// 달마다 대출표: 해마다 접어 두고(올해는 펼침). 달마다 낼 돈, 금고 상환(비우면 계획), '냄' 도장
+// 달마다 대출표: 해마다 접어 두고(올해는 펼침). 달마다 낼 돈, 금고 상환(비우면 계획), '냄' 도장. 폰에서는 나눈 칸(d)을 숨긴다
 import { won } from '../../domain/format';
 import type { LoanRow } from '../../domain/loans';
 import { Card } from '../../ui/bits';
@@ -40,15 +40,15 @@ export function LoanTable({ rows, today, onRepay, onPaid }: Props) {
             <div className="table-wrap">
               <table className="loan-table">
                 <thead>
-                  <tr><th scope="col">달</th><th scope="col">사내대출</th><th scope="col">금고 이자</th><th scope="col">세금</th><th scope="col">합계</th><th scope="col">금고 상환</th><th scope="col">냄</th></tr>
+                  <tr><th scope="col">달</th><th scope="col" className="d">사내대출</th><th scope="col" className="d">금고 이자</th><th scope="col" className="d">세금</th><th scope="col">합계</th><th scope="col">금고 상환</th><th scope="col">냄</th></tr>
                 </thead>
                 <tbody>
                   {list.map((r) => (
                     <tr key={r.month} className={[r.maturity && 'maturity', r.month === now && 'now', r.paid && 'paid'].filter(Boolean).join(' ')}>
                       <th scope="row">{mm(r.month)}{r.maturity && <small>금고 만기</small>}</th>
-                      <td>{won(r.coInt + r.coPrin)}</td>
-                      <td>{won(r.ggInt)}</td>
-                      <td>{won(r.lowTax)}</td>
+                      <td className="d">{won(r.coInt + r.coPrin)}</td>
+                      <td className="d">{won(r.ggInt)}</td>
+                      <td className="d">{won(r.lowTax)}</td>
                       <td className="sum">{won(r.due)}</td>
                       <td className="repay">
                         <NumberInput kind="won" aria-label={`${y}년 ${mm(r.month)} 금고 상환 (만원)`}

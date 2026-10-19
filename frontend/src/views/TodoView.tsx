@@ -1,4 +1,5 @@
-// 할 일: 확인할 것(묶음별로 나란히) / 날짜(계획 + 내가 넣은 일정) | 참고 링크
+// 할 일: 확인할 것(묶음별로 나란히, 단계별 묶음 더하기) / 날짜 | 참고 링크 / 앞으로 12달 돈 일정
+import { upcoming } from '../domain/bills';
 import { removeFrom } from '../domain/edit';
 import { timeline } from '../domain/timeline';
 import { useSyncs } from '../state/DataProvider';
@@ -6,6 +7,7 @@ import { useModel } from '../state/ModelProvider';
 import { useDocSync } from '../state/sync';
 import { Card, PageHead } from '../ui/bits';
 import { AddEvent } from './todo/AddEvent';
+import { BillsCard } from './todo/BillsCard';
 import { Checklist } from './todo/Checklist';
 import { Links } from './todo/Links';
 import { Timeline } from './todo/Timeline';
@@ -15,7 +17,7 @@ export function TodoView() {
   const syncs = useSyncs();
   const [checks, setChecks] = useDocSync(syncs.checks);
   const [plan, setPlan] = useDocSync(syncs.plan);
-  const items = timeline(model.s, model.c, model.o, plan.events);
+  const items = timeline(model.s, model.c, model.o, plan.events, model.loanSum.atMaturity);
   const left = checks.items.filter((x) => !x.done).length;
   return (
     <div className="page">
@@ -32,6 +34,7 @@ export function TodoView() {
           <Links links={checks.links} onChange={(next) => setChecks({ ...checks, links: next })} />
         </Card>
       </div>
+      <BillsCard months={upcoming(model, 12)} />
     </div>
   );
 }

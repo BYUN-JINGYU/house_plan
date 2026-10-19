@@ -30,3 +30,8 @@ export function computePlan(plan: PlanDoc, people: People, book: QuoteBook, asOf
 }
 
 export type PlanModel = ReturnType<typeof computePlan>;
+
+/** 계산에 들어가는 것 전부 (위기 시험이 일부를 바꿔 다시 센다) */
+export interface PlanInputs { plan: PlanDoc; people: People; book: QuoteBook; asOf: Ymd; log: LoansDoc }
+
+export const computeFrom = (x: PlanInputs): PlanModel => computePlan(x.plan, x.people, x.book, x.asOf, x.log);

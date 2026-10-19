@@ -78,7 +78,7 @@ export function Rows({ rows }: { rows: Row[] }) {
   );
 }
 
-export interface HBar { label: string; note?: string; v: number; text: string }
+export interface HBar { id?: string; label: string; note?: string; v: number; text: string }
 
 /** 한 계열 크기 비교. 큰 순서로 넣는다. */
 export function HBars({ items, label }: { items: HBar[]; label: string }) {
@@ -86,7 +86,7 @@ export function HBars({ items, label }: { items: HBar[]; label: string }) {
   return (
     <ul className="hbars" aria-label={label}>
       {items.map((x) => (
-        <li key={x.label}>
+        <li key={x.id ?? x.label}>
           <span className="hb-label">{x.label}{x.note && <small>{x.note}</small>}</span>
           <strong>{x.text}</strong>
           <span className="hb-track"><span style={{ width: `${(x.v / max) * 100}%` }} /></span>

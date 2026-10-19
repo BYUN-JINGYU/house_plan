@@ -18,6 +18,7 @@
 - 월급은 사람별로 달마다 적는다(`pay.ts`, people 문서의 `pay`). 안 적은 달은 가정의 월 실수령(둘 합계)을 계약연봉 비율로 나눈 값.
 - 구매 전 흐름(`before.ts`)은 오늘~잔금 달마다 들어오고 나가는 돈. 끝 잔액 − 비상금 = 잔금 판정의 여유·부족.
 - 구매 후 대출표(`loans.ts`)는 연도별 계획(`yearly.ts`)의 금고 상환을 달로 옮긴 것: 그해 특별성과급 매도분 + 지난해 남는 돈을 그해 첫 달에. 기록(loans 문서: 냄, 실제 상환, 금리 바뀐 달)이 있으면 그 값.
+- 조언 계산: `stress.ts`(계획을 조금씩 바꿔 `computeFrom`으로 다시 셈), `portfolio.ts`, `bills.ts`(12달 돈 일정), `insights.ts`(한 줄 점검, 5개까지). 금고 만기 숫자는 어디서나 `loanSum`(대출표) 기준.
 - 화면 상태: `state/sync.ts`의 `DocSync`가 문서(plan·people·checks·loans)를 버전과 함께 자동 저장, 409면 서버 값으로 바꾼다.
 - 시세: `backend/app/quotes/` 공급자(Protocol) → `FallbackChain` → `QuoteService`(DB 캐시, TTL). 새 공급자는 `container.default_provider()`에 끼운다.
 - 의존성 조립은 `backend/app/container.py` 한 곳. 테스트는 `create_app(settings, provider=가짜)`로 바꿔 끼운다.

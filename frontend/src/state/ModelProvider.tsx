@@ -1,6 +1,6 @@
 // 문서(계획·사람·대출 기록) + 시세 + 오늘 날짜로 화면 전체가 쓰는 숫자를 한 번 계산해 나눠 준다.
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { computePlan, type PlanModel } from '../domain/compute';
+import { computeFrom, type PlanInputs, type PlanModel } from '../domain/compute';
 import { symbolsOf } from '../domain/people';
 import { USDKRW } from '../domain/pricing';
 import { todayKst } from '../domain/schedule';
@@ -11,6 +11,8 @@ import { useQuotes, type QuotesState } from './useQuotes';
 interface ModelValue {
   model: PlanModel;
   quotes: QuotesState;
+  /** 위기 시험처럼 일부를 바꿔 다시 셀 때 쓰는 입력 */
+  inputs: PlanInputs;
 }
 
 const ModelContext = createContext<ModelValue | null>(null);
@@ -37,8 +39,9 @@ export function ModelProvider({ children }: { children: ReactNode }) {
     return plan.useLiveFx || list.some((k) => k.startsWith('US:')) ? [...list, USDKRW] : list;
   }, [people, plan.useLiveFx]);
   const quotes = useQuotes(keys);
-  const model = useMemo(() => computePlan(plan, people, quotes.book, today, loans), [plan, people, quotes.book, today, loans]);
-  const value = useMemo(() => ({ model, quotes }), [model, quotes]);
+  const inputs = useMemo(() => ({ plan, people, book: quotes.book, asOf: today, log: loans }), [plan, people, quotes.book, today, loans]);
+  const model = useMemo(() => computeFrom(inputs), [inputs]);
+  const value = useMemo(() => ({ model, quotes, inputs }), [model, quotes, inputs]);
   return <ModelContext.Provider value={value}>{children}</ModelContext.Provider>;
 }
 

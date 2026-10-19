@@ -23,12 +23,12 @@ function planned(s: Scenario, c: Closing): Dated[] {
   ];
 }
 
-function yearly(s: Scenario, o: Outlook): [string, TimelineItem][] {
+function yearly(s: Scenario, o: Outlook, ggLeft: number): [string, TimelineItem][] {
   const parts = Math.max(1, Math.round(s.opi2N));
   const later = new Map<number, string[]>();
   const add = (year: number, text: string) => later.set(year, [...(later.get(year) ?? []), text]);
   for (let k = 1; k < parts; k += 1) add(s.closeYear + k, `특별성과급 1/${parts} 더 팔 수 있음`);
-  add(s.closeYear + Math.round(s.ggTerm), `금고 만기 (남는 금고 ${won(o.atMaturity)})`);
+  add(s.closeYear + Math.round(s.ggTerm), `금고 만기 (남는 금고 ${won(ggLeft)})`);
   add(s.closeYear + Math.round(s.coGrace), `사내대출 원리금 시작 (월 ${won(o.afterGrace.coPay / 12)})`);
   const month = String(s.closeMonth).padStart(2, '0');
   return [...later.entries()].map(([year, list]) => {
@@ -37,12 +37,13 @@ function yearly(s: Scenario, o: Outlook): [string, TimelineItem][] {
   });
 }
 
-export function timeline(s: Scenario, c: Closing, o: Outlook, events: PlanEvent[] = []): TimelineItem[] {
+/** ggLeft: 금고 만기에 남는 돈 (달마다 대출표 기준을 넘긴다. 없으면 연도별 계획) */
+export function timeline(s: Scenario, c: Closing, o: Outlook, events: PlanEvent[] = [], ggLeft = o.atMaturity): TimelineItem[] {
   const dated: Dated[] = [...planned(s, c), ...events.map((e) => ({ date: e.date, what: e.text, eventId: e.id }))];
   const items: [string, TimelineItem][] = dated.map((d) => {
     const { y } = parseYmd(d.date);
     const when = d.date > s.closingDate ? `${y}년 ${dateLabel(d.date)}` : dateLabel(d.date);
     return [d.date, { when, what: d.what, key: Boolean(d.key), past: d.date < s.asOf, eventId: d.eventId }];
   });
-  return [...items, ...yearly(s, o)].sort((x, y) => x[0].localeCompare(y[0])).map(([, item]) => item);
+  return [...items, ...yearly(s, o, ggLeft)].sort((x, y) => x[0].localeCompare(y[0])).map(([, item]) => item);
 }

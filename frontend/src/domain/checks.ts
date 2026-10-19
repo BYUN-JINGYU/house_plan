@@ -27,6 +27,32 @@ export const DEFAULT_CHECKS: ChecksDoc = {
   ],
 };
 
+/** 단계별로 한 번에 더하는 할 일 (기한은 법에 정해진 것만: 취득세 60일, 전입신고 14일) */
+export const PHASE_TODOS: Record<'closing' | 'after', CheckItem[]> = {
+  closing: [
+    item('p-loan', '구입일', '대출 실행 시간과 받는 계좌 확인 (잔금 당일)'),
+    item('p-reg', '구입일', '법무사에게 등기 서류와 비용 받기'),
+    item('p-acq', '구입일', '취득세 신고·납부 (잔금일부터 60일 안)'),
+    item('p-move', '구입일', '전입신고 (이사한 날부터 14일 안)'),
+    item('p-fee', '구입일', '관리비·장기수선충당금 정산'),
+    item('p-util', '구입일', '전기·가스·인터넷 명의 바꾸기'),
+    item('p-fire', '구입일', '화재보험이 필요한지 확인'),
+  ],
+  after: [
+    item('a-auto', '구매 후', '대출 이자 자동이체 계좌에 돈 두기'),
+    item('a-tax', '구매 후', '재산세 7월·9월 고지서 확인'),
+    item('a-gg', '구매 후', '금고 만기 3달 전에 연장할지 갚을지 정하기'),
+    item('a-rate', '구매 후', '금리가 바뀌면 구매 후 탭에 넣기'),
+    item('a-year', '구매 후', '연말정산 때 받을 수 있는 주택 공제 확인'),
+  ],
+};
+
+/** 단계 묶음을 더한다 (이미 있는 것은 건너뜀) */
+export function withPhase(items: CheckItem[], phase: keyof typeof PHASE_TODOS): CheckItem[] {
+  const have = new Set(items.map((x) => x.id));
+  return [...items, ...PHASE_TODOS[phase].filter((x) => !have.has(x.id))];
+}
+
 const s = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const isWebUrl = (u: string) => /^https?:\/\//i.test(u);
 

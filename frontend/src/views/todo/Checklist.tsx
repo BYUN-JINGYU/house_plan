@@ -1,6 +1,6 @@
 // 확인할 것: 묶음별 체크(넓으면 묶음끼리 나란히), 지우기, 추가
 import { useState, type FormEvent } from 'react';
-import type { CheckItem } from '../../domain/checks';
+import { withPhase, type CheckItem } from '../../domain/checks';
 import { patchIn, removeFrom } from '../../domain/edit';
 import { TextInput } from '../../ui/inputs';
 
@@ -42,6 +42,11 @@ export function Checklist({ items, onChange }: Props) {
         <TextInput aria-label="확인할 것" placeholder="확인할 것 추가" maxLength={120} value={text} onValue={setText} />
         <button type="submit" className="btn ghost">추가</button>
       </form>
+      <div className="card-foot">
+        <span className="note">단계별 할 일 한 번에 더하기</span>
+        <button type="button" className="linkish" onClick={() => onChange(withPhase(items, 'closing'))}>+ 구입일</button>
+        <button type="button" className="linkish" onClick={() => onChange(withPhase(items, 'after'))}>+ 구매 후</button>
+      </div>
     </>
   );
 }
