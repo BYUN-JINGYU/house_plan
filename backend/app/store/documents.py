@@ -11,7 +11,7 @@ from ..clock import as_utc, utcnow
 from ..db import Database
 from ..models import Document
 
-DOC_KEYS = ("plan", "people", "checks")
+DOC_KEYS = ("plan", "people", "checks", "loans")
 
 
 @dataclass(frozen=True)

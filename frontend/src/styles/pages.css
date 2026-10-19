@@ -1,15 +1,9 @@
-/* 화면별: 판정, 페이지 머리, 자산 목록, 종목, 가계부, 날짜·확인, 가정, 로그인 */
+/* 화면별: 페이지 머리, 자산 목록, 입력 줄, 가계부, 날짜·확인, 가정, 로그인 (돈 조각은 money.css) */
 .page { display: flex; flex-direction: column; gap: 24px; }
 .banner { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 12px 16px; border-radius: 12px; background: var(--accent-wash); font-weight: 600; }
 
-.hero { display: grid; gap: 10px; padding: 4px 0 4px; }
-.hero-when { font-size: 15px; font-weight: 600; color: var(--ink-2); }
-.hero-main { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
-.hero-num { font-size: var(--t-hero); font-weight: 800; line-height: 1.15; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
-.hero-sub { font-size: 17px; color: var(--ink-2); }
-
 .page-head { display: grid; gap: 4px; }
-.page-head h1 { font-size: var(--t-page); font-weight: 800; letter-spacing: -0.02em; }
+.page-head h1 { font-size: var(--t-page); font-weight: 800; letter-spacing: -0.025em; }
 .page-num-label { margin-top: 8px; font-size: 15px; font-weight: 600; color: var(--ink-2); }
 .gap-y { margin: 14px 0; }
 .page-num { font-size: 40px; font-weight: 800; line-height: 1.15; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
@@ -29,27 +23,8 @@
 .edit-list .line .num-input { flex: 0 0 auto; width: clamp(116px, 42%, 136px); }
 .fees { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 4px; }
 .mini { display: grid; gap: 4px; min-width: 0; font-size: var(--t-cap); font-weight: 600; color: var(--ink-2); }
-.broker .title-input { font-size: 17px; font-weight: 700; max-width: 240px; }
-.holdings { margin-top: 12px; container-type: inline-size; }
-.holding { padding: 14px 0; border-top: 1px solid var(--line); }
-.h-top { display: flex; align-items: center; gap: 8px; }
-.h-top .code { flex: 0 0 104px; text-transform: uppercase; font-variant-numeric: tabular-nums; font-weight: 700; }
-.h-top .hname { flex: 1 1 auto; }
-.hnet { min-width: 72px; text-align: right; font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.mkt { flex: none; padding: 3px 8px; border-radius: 6px; font-size: var(--t-cap); font-weight: 700; background: var(--neutral-wash); color: var(--ink-2); }
-.h-bottom { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; align-items: end; }
-.src { font-size: var(--t-cap); color: var(--muted); padding-bottom: 12px; }
 .sum-line { margin-top: 10px; font-size: var(--t-small); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .quote-line { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; }
-/* 좁은 카드에서는 종목 이름을 둘째 줄로 내려 잘리지 않게 (위 .h-top 규칙보다 뒤에 둔다) */
-@container (max-width: 440px) {
-  .h-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: "mkt code net del" "name name name name"; }
-  .h-top .mkt { grid-area: mkt; }
-  .h-top .code { grid-area: code; }
-  .h-top .hname { grid-area: name; }
-  .h-top .hnet { grid-area: net; }
-  .h-top .icon-btn { grid-area: del; }
-}
 
 .month-head { display: grid; gap: 16px; }
 .month-nav { display: flex; align-items: center; gap: 4px; }
@@ -132,7 +107,6 @@ details.group > summary .badge { font-size: var(--t-small); padding: 2px 10px; }
 .overlay { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 16px; background: color-mix(in srgb, var(--page) 82%, transparent); backdrop-filter: blur(3px); }
 
 @media (max-width: 560px) {
-  .hero-sub { font-size: 16px; }
   .page-num { font-size: 34px; }
   .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 10px 0; }
   .timeline .when { font-size: var(--t-small); }

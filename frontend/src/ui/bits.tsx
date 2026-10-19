@@ -1,5 +1,6 @@
 // 작은 표시 조각: 카드, 숫자 카드, 상태 배지, 접는 설명, 줄 목록, 크기 비교 막대
 import type { ReactNode } from 'react';
+import { Num } from './Num';
 
 interface CardProps { title?: ReactNode; value?: string; className?: string; children?: ReactNode }
 
@@ -10,7 +11,7 @@ export function Card({ title, value, className, children }: CardProps) {
       {(title || value) && (
         <div className="card-head">
           {title && <h2>{title}</h2>}
-          {value && <strong className="card-value">{value}</strong>}
+          {value && <strong className="card-value"><Num text={value} /></strong>}
         </div>
       )}
       {children}
@@ -26,7 +27,7 @@ export function PageHead({ title, numLabel, num, sub }: PageHeadProps) {
     <header className="page-head">
       <h1>{title}</h1>
       {numLabel && <p className="page-num-label">{numLabel}</p>}
-      {num && <p className="page-num">{num}</p>}
+      {num && <p className="page-num"><Num text={num} /></p>}
       {sub && <p className="page-sub">{sub}</p>}
     </header>
   );
@@ -38,7 +39,7 @@ export function Stat({ label, value, sub, tone }: { label: string; value: string
   return (
     <div className="stat">
       <p className="stat-label">{label}</p>
-      <p className={`stat-value ${tone ?? ''}`}>{value}</p>
+      <p className={`stat-value ${tone ?? ''}`}><Num text={value} /></p>
       {sub && <p className="stat-sub">{sub}</p>}
     </div>
   );

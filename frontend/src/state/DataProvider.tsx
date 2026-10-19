@@ -1,34 +1,39 @@
-// 로그인 뒤 문서 3개(계획·사람·할 일)를 한 번 읽어 와서 화면 전체에 나눠 준다.
+// 로그인 뒤 문서(계획·사람·할 일·대출 기록)를 한 번 읽어 와서 화면 전체에 나눠 준다.
+// 새 문서는 NORMALIZE에 한 줄 더하고, 백엔드 DOC_KEYS에도 넣는다.
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import { LOGGED_IN } from '../api/client';
-import { docs } from '../api/endpoints';
-import { normalizeChecks, type ChecksDoc } from '../domain/checks';
-import { normalizePeople, type People } from '../domain/people';
-import { normalizePlan, type PlanDoc } from '../domain/plan';
+import { docs, type DocKey, type DocOut } from '../api/endpoints';
+import { normalizeChecks } from '../domain/checks';
+import { normalizeLoans } from '../domain/loanlog';
+import { normalizePeople } from '../domain/people';
+import { normalizePlan } from '../domain/plan';
 import { Notice } from '../ui/Notice';
 import { DocSync } from './sync';
 
-export interface Syncs {
-  plan: DocSync<PlanDoc>;
-  people: DocSync<People>;
-  checks: DocSync<ChecksDoc>;
-}
+const NORMALIZE = { plan: normalizePlan, people: normalizePeople, checks: normalizeChecks, loans: normalizeLoans } satisfies Record<DocKey, (raw: unknown) => unknown>;
+const KEYS = Object.keys(NORMALIZE) as DocKey[];
+
+export type Syncs = { [K in DocKey]: DocSync<ReturnType<(typeof NORMALIZE)[K]>> };
 
 const DataContext = createContext<Syncs | null>(null);
+
+function makeSyncs(d: Partial<Record<DocKey, DocOut>>): Syncs {
+  const out: Partial<Record<DocKey, DocSync<unknown>>> = {};
+  for (const k of KEYS) out[k] = new DocSync<unknown>(k, d[k], NORMALIZE[k]);
+  return out as Syncs;
+}
+
+const each = (syncs: Syncs) => KEYS.map((k) => syncs[k] as DocSync<unknown>);
 
 /** 숨기면 바로 저장, 다시 보면 다른 기기 변경을 받기, 다시 로그인하면 못 한 저장 마저 하기 */
 function useSyncLifecycle(syncs: Syncs | null) {
   useEffect(() => {
     if (!syncs) return;
-    const all = [syncs.plan, syncs.people, syncs.checks] as DocSync<unknown>[];
+    const all = each(syncs);
     const flush = () => all.forEach((s) => s.flushNow());
     const onVisibility = () => {
       if (document.visibilityState === 'hidden') { flush(); return; }
-      docs.all().then((d) => {
-        syncs.plan.adopt(d.plan);
-        syncs.people.adopt(d.people);
-        syncs.checks.adopt(d.checks);
-      }).catch(() => undefined);
+      docs.all().then((d) => KEYS.forEach((k) => (syncs[k] as DocSync<unknown>).adopt(d[k]))).catch(() => undefined);
     };
     const onLeave = (e: BeforeUnloadEvent) => {
       if (all.some((s) => s.get().state !== 'saved' && s.get().state !== 'conflict')) { flush(); e.preventDefault(); }
@@ -50,13 +55,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback(() => {
     setError(null);
-    docs.all()
-      .then((d) => setSyncs({
-        plan: new DocSync('plan', d.plan, normalizePlan),
-        people: new DocSync('people', d.people, normalizePeople),
-        checks: new DocSync('checks', d.checks, normalizeChecks),
-      }))
-      .catch((err: Error) => setError(err.message));
+    docs.all().then((d) => setSyncs(makeSyncs(d))).catch((err: Error) => setError(err.message));
   }, []);
 
   useEffect(load, [load]);

@@ -5,6 +5,7 @@ import './styles/shell.css';
 import './styles/cards.css';
 import './styles/charts.css';
 import './styles/pages.css';
+import './styles/money.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';

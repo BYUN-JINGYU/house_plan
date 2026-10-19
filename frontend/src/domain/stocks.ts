@@ -32,6 +32,12 @@ export function holdingSale(h: Holding, price: number, broker: Broker, a: SaleRa
   return { gross, net: gross - fees, fees, gain: 0, us: false };
 }
 
+/** 산 돈 (만원). 해외는 매수 환율, 모르면 지금 환율로 */
+export function holdingCost(h: Holding, a: SaleRates): number {
+  const qty = h.qty || 0;
+  return h.market === 'US' ? (qty * (h.avg || 0) * (h.fxBuy || a.usdkrw)) / WON : (qty * (h.avg || 0)) / WON;
+}
+
 export interface PricedSale extends Sale { id: string; priced: Priced }
 export interface BrokerSale { id: string; rows: PricedSale[]; gross: number; fees: number; net: number; usGain: number }
 export interface PersonStocks {

@@ -19,7 +19,7 @@ export function payShares(salA: number, salB: number): Shares {
 }
 
 /** 그 달 두 사람 합계. 둘 다 안 적었으면 가정 값 그대로 (나눴다 더할 때 생기는 오차가 없게) */
-function monthTotal(month: Month, pay: PayEntries, netMonth: number, shares: Shares): number {
+export function monthTotal(month: Month, pay: PayEntries, netMonth: number, shares: Shares): number {
   const a = pay.a[month];
   const b = pay.b[month];
   if (a === undefined && b === undefined) return netMonth;

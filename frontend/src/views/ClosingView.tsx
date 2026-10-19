@@ -1,13 +1,15 @@
-// 잔금: 계산식 | 부대비용 막대, 모을 돈 | 계약금 (한 줄의 두 카드는 높이를 맞춘다)
+// 구입일: 계산식 | 부대비용 막대 / 잔금일에 받는 대출 | 잔금 뒤 첫 달
 import type { Closing } from '../domain/closing';
 import { pct, won } from '../domain/format';
 import type { Scenario } from '../domain/scenario';
 import { dateLabel } from '../domain/schedule';
+import { monthLabel } from '../domain/ledger';
 import { useSyncs } from '../state/DataProvider';
 import { useModel } from '../state/ModelProvider';
 import { useDocSync } from '../state/sync';
 import { Card, HBars, PageHead, Rows, type Row } from '../ui/bits';
-import { InflowCard } from './closing/InflowCard';
+import { LoanNow } from './after/LoanNow';
+import { LoanSetup } from './closing/LoanSetup';
 
 const tone = (v: number) => (v >= 0 ? 'good' : 'bad');
 
@@ -46,12 +48,12 @@ function costs(s: Scenario, c: Closing) {
 
 export function ClosingView() {
   const { model } = useModel();
-  const [plan, setPlan] = useDocSync(useSyncs().plan);
-  const { s, c } = model;
-  const has = c.have > 0;
+  const [plan] = useDocSync(useSyncs().plan);
+  const { s, c, loans } = model;
+  const first = loans[0];
   return (
     <div className="page">
-      <PageHead title="잔금" sub={`${dateLabel(s.closingDate)} 잔금에 필요한 돈을 계산해요.`} />
+      <PageHead title="구입일" sub={`${dateLabel(s.closingDate)} 잔금에 필요한 돈을 계산해요.`} />
       <div className="grid even">
         <Card title="계산식" value={won(c.reqAll)}>
           <Rows rows={receipt(s, c)} />
@@ -61,21 +63,8 @@ export function ClosingView() {
         </Card>
       </div>
       <div className="grid even">
-        <InflowCard s={s} c={c} />
-        <Card title={`${dateLabel(s.depositDate)} 계약금`} value={won(c.deposit)}>
-          {plan.depositPaid ? (
-            <p className="sub">냈어요. 지금 자산에서 이미 빠진 것으로 계산해요.</p>
-          ) : (
-            <Rows rows={[
-              { label: '그때까지 쓸 수 있는 돈', note: `지금 자산 + 월급 ${s.depMonths}번${s.depPiDue ? ' + PI' : ''}`, value: has ? won(c.depCash) : '자산 입력 전' },
-              gapRow(has, c.depGap),
-            ]} />
-          )}
-          <label className="check-line">
-            <input type="checkbox" checked={plan.depositPaid} onChange={(e) => setPlan({ ...plan, depositPaid: e.target.checked })} />
-            계약금 냈어요
-          </label>
-        </Card>
+        <LoanSetup s={s} c={c} names={plan.names} />
+        {first && <LoanNow row={first} title={`잔금 뒤 첫 달 (${monthLabel(first.month)})`} />}
       </div>
     </div>
   );

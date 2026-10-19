@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { household, normalizePeople, symbolsOf } from './people';
 import { severance } from './retire';
-import { holdingSale, personStocks, type Broker, type Holding } from './stocks';
+import { holdingCost, holdingSale, personStocks, type Broker, type Holding } from './stocks';
 
 const rates = { usdkrw: 1400, krTax: 0.002, usTaxRate: 0.22, usDeduct: 250 };
 const broker = (holdings: Holding[]): Broker => ({ id: 'b', name: '증권', krFee: 0.00015, usFee: 0.0025, fxFee: 0.01, holdings });
@@ -21,6 +21,14 @@ describe('holdingSale', () => {
     expect(sale.gross).toBeCloseTo(280);
     expect(sale.net).toBeCloseTo(276.507);
     expect(sale.gain).toBeCloseTo(280 - 0.7 - 195);
+  });
+});
+
+describe('holdingCost', () => {
+  it('산 돈: 국내는 수량×평단, 해외는 매수 환율(모르면 지금 환율)로', () => {
+    expect(holdingCost(kr, rates)).toBeCloseTo(50);
+    expect(holdingCost(us, rates)).toBeCloseTo(195);
+    expect(holdingCost({ ...us, fxBuy: 0 }, rates)).toBeCloseTo(210);
   });
 });
 

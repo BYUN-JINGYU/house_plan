@@ -1,34 +1,38 @@
-// 앱 뼈대: 비밀번호 → 문서 불러오기 → 계산 → 메뉴 띠 + 화면
+// 앱 뼈대: (로그인) → 문서 불러오기 → 계산 → 메뉴 띠 + 화면
 import { useEffect, useState, type ReactNode } from 'react';
 import { DataProvider, useSyncs } from './state/DataProvider';
 import { ModelProvider, useModel } from './state/ModelProvider';
 import { useDocSync } from './state/sync';
 import { useAuth } from './state/useAuth';
+import { Icon } from './ui/Icon';
 import { Notice } from './ui/Notice';
 import { Tabs } from './ui/Tabs';
 import { AfterView } from './views/AfterView';
+import { AssetsView } from './views/AssetsView';
 import { AssumeView } from './views/AssumeView';
+import { BeforeView } from './views/BeforeView';
 import { ClosingView } from './views/ClosingView';
+import { HomeView } from './views/HomeView';
 import { LedgerView } from './views/LedgerView';
 import { LoginView } from './views/LoginView';
-import { PersonView } from './views/PersonView';
 import { Rail } from './views/Rail';
-import { SummaryView } from './views/SummaryView';
-import { tabFromHash, tabList, type TabId } from './views/tabs';
+import { TABS, tabFromHash, type TabId } from './views/tabs';
 import { TodoView } from './views/TodoView';
 
 function view(tab: TabId, go: (t: TabId) => void, onLogout?: () => void): ReactNode {
   switch (tab) {
-    case 'summary': return <SummaryView go={go} />;
-    case 'a': return <PersonView who="a" />;
-    case 'b': return <PersonView who="b" />;
-    case 'ledger': return <LedgerView />;
+    case 'home': return <HomeView go={go} />;
+    case 'assets': return <AssetsView />;
+    case 'before': return <BeforeView />;
     case 'closing': return <ClosingView />;
     case 'after': return <AfterView />;
+    case 'ledger': return <LedgerView />;
     case 'todo': return <TodoView />;
     case 'assume': return <AssumeView onLogout={onLogout} />;
   }
 }
+
+const NAV = TABS.map((t) => ({ id: t.id, label: <span>{t.label}</span>, icon: <Icon name={t.icon} /> }));
 
 function Shell({ onLogout }: { onLogout?: () => void }) {
   const [tab, setTab] = useState<TabId>(() => tabFromHash(window.location.hash));
@@ -47,7 +51,7 @@ function Shell({ onLogout }: { onLogout?: () => void }) {
   return (
     <div className="shell">
       <Rail title={plan.title} s={model.s} onLogout={onLogout}>
-        <Tabs tabs={tabList(plan.names)} current={tab} onSelect={go} />
+        <Tabs tabs={NAV} current={tab} onSelect={go} />
       </Rail>
       <main className="content" id="panel" role="tabpanel" aria-labelledby={`tab-${tab}`} key={tab}>
         {view(tab, go, onLogout)}

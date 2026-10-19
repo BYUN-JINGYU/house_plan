@@ -1,7 +1,7 @@
 // 고르기 메뉴 (화면 메뉴, 사람 탭 안 항목). 화살표·Home·End로도 움직인다 (세로 메뉴든 가로 메뉴든).
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 
-export interface TabDef<T extends string> { id: T; label: string }
+export interface TabDef<T extends string> { id: T; label: ReactNode; icon?: ReactNode }
 
 interface Props<T extends string> {
   tabs: TabDef<T>[];
@@ -32,7 +32,7 @@ export function Tabs<T extends string>(props: Props<T>) {
       {tabs.map((t) => (
         <button key={t.id} id={`${idPrefix}-${t.id}`} type="button" role="tab" aria-selected={t.id === current}
           aria-controls={panelId} tabIndex={t.id === current ? 0 : -1} onClick={() => onSelect(t.id)}>
-          {t.label}
+          {t.icon}{t.label}
         </button>
       ))}
     </nav>

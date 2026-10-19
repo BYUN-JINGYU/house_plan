@@ -3,7 +3,7 @@ import type { LedgerEntry, NewEntry } from '../domain/ledger';
 import type { QuoteBook } from '../domain/pricing';
 import { request } from './client';
 
-export type DocKey = 'plan' | 'people' | 'checks';
+export type DocKey = 'plan' | 'people' | 'checks' | 'loans';
 export interface DocOut { data: unknown; version: number; updatedAt: string }
 export interface QuotesOut { quotes: QuoteBook; missing: string[] }
 export interface Backup { format: 'houseplan-backup'; version: 1; docs: Record<string, unknown>; ledger?: unknown[] }

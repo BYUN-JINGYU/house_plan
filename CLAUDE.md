@@ -14,9 +14,11 @@
 ## 지도
 
 - 돈 계산의 유일한 원천은 `frontend/src/domain/` (순수 함수, 테스트 동봉). 백엔드는 계산하지 않는다: 문서 저장, 가계부, 시세만.
-- `domain/compute.ts`가 문서 3개 + 시세 + 오늘 날짜 → 화면 숫자 전부. 날짜가 지난 수입(월급·PI·PS)은 통장에 있다고 보고 뺀다(`scenario.ts`).
+- `domain/compute.ts`가 문서 4개 + 시세 + 오늘 날짜 → 화면 숫자 전부. 날짜가 지난 수입(월급·PI·PS)은 통장에 있다고 보고 뺀다(`scenario.ts`).
 - 월급은 사람별로 달마다 적는다(`pay.ts`, people 문서의 `pay`). 안 적은 달은 가정의 월 실수령(둘 합계)을 계약연봉 비율로 나눈 값.
-- 화면 상태: `state/sync.ts`의 `DocSync`가 문서(plan·people·checks)를 버전과 함께 자동 저장, 409면 서버 값으로 바꾼다.
+- 구매 전 흐름(`before.ts`)은 오늘~잔금 달마다 들어오고 나가는 돈. 끝 잔액 − 비상금 = 잔금 판정의 여유·부족.
+- 구매 후 대출표(`loans.ts`)는 연도별 계획(`yearly.ts`)의 금고 상환을 달로 옮긴 것: 그해 특별성과급 매도분 + 지난해 남는 돈을 그해 첫 달에. 기록(loans 문서: 냄, 실제 상환, 금리 바뀐 달)이 있으면 그 값.
+- 화면 상태: `state/sync.ts`의 `DocSync`가 문서(plan·people·checks·loans)를 버전과 함께 자동 저장, 409면 서버 값으로 바꾼다.
 - 시세: `backend/app/quotes/` 공급자(Protocol) → `FallbackChain` → `QuoteService`(DB 캐시, TTL). 새 공급자는 `container.default_provider()`에 끼운다.
 - 의존성 조립은 `backend/app/container.py` 한 곳. 테스트는 `create_app(settings, provider=가짜)`로 바꿔 끼운다.
 
@@ -34,7 +36,7 @@
 - 야후는 클라우드 IP를 429로 자주 막는다: 막히면 15분 쉬고 다음 공급자로. 국내는 pykrx(네이버 일봉, KRX 로그인 불필요)가 먼저.
 - `import pykrx`는 matplotlib까지 불러와 무겁다: 공급자 함수 안에서만 늦게 import.
 - DB 스키마는 `create_all`뿐(마이그레이션 없음). 열을 바꾸면 기존 DB를 직접 옮겨야 한다.
-- 문서 키는 `DOC_KEYS`(plan, people, checks)만 허용한다. 새 문서는 백엔드 목록, 프론트 `DataProvider`, 백업에 같이 넣는다.
+- 문서 키는 `DOC_KEYS`(plan, people, checks, loans)만 허용한다. 새 문서는 백엔드 `DOC_KEYS`와 프론트 `DataProvider`의 `NORMALIZE`에 같이 넣는다(백업은 `DOC_KEYS`를 따른다).
 - 무료 Render는 15분 쉬면 잠든다. 로그인 시도 제한(`auth/guard.py`)은 메모리라 재시작하면 초기화된다.
 - 시도 제한은 X-Forwarded-For 첫 값을 접속 주소로 믿는다(Render가 실제 주소로 채운다). 다른 호스팅으로 옮기면 `client_key`부터 다시 본다.
 - 시세 자동 갱신 응답은 공개 Actions 기록에 남는다: 종목 이름을 돌려주지 않는다(개수만).

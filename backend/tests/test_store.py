@@ -48,6 +48,12 @@ def test_ledger_validation(authed):
     assert authed.get("/api/ledger", params={"from": "2026-10-31", "to": "2026-10-01"}).status_code == 400
 
 
+def test_loans_doc_is_saved_and_backed_up(authed):
+    saved = authed.put("/api/docs/loans", json={"data": {"months": {"2027-05": {"paid": True}}}, "version": 0})
+    assert saved.status_code == 200
+    assert authed.get("/api/backup").json()["docs"]["loans"]["months"]["2027-05"]["paid"] is True
+
+
 def test_backup_roundtrip(authed):
     authed.put("/api/docs/plan", json={"data": {"title": "우리 집"}, "version": 0})
     authed.post("/api/ledger", json=ENTRY)

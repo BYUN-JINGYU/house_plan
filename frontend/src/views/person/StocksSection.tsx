@@ -1,9 +1,9 @@
-// 증권: 팔면 받는 돈 요약, 계좌별 종목, 계좌 추가
-import { newBroker, patchIn, removeFrom } from '../../domain/edit';
+// 증권: 팔면 받는 돈 합계 / 보유 종목(종목마다 펼쳐 고치기) / 계좌와 수수료
 import type { PersonAssets } from '../../domain/people';
 import type { Broker } from '../../domain/stocks';
 import { useModel } from '../../state/ModelProvider';
-import { BrokerCard } from './BrokerCard';
+import { AccountsCard } from './AccountsCard';
+import { HoldingList } from './HoldingList';
 import { StocksHead } from './StocksHead';
 
 interface Props { brokers: Broker[]; mine: PersonAssets; onChange: (brokers: Broker[]) => void }
@@ -13,12 +13,8 @@ export function StocksSection({ brokers, mine, onChange }: Props) {
   return (
     <div className="col">
       <StocksHead stocks={mine.stocks} quotes={quotes} rates={model.rates} liveFx={model.liveFx} />
-      {brokers.map((b, i) => (
-        <BrokerCard key={b.id} broker={b} sale={mine.stocks.brokers[i]}
-          onChange={(next) => onChange(patchIn(brokers, b.id, next))}
-          onRemove={() => onChange(removeFrom(brokers, b.id))} />
-      ))}
-      <button type="button" className="btn ghost" onClick={() => onChange([...brokers, newBroker()])}>+ 증권 계좌 추가</button>
+      <HoldingList brokers={brokers} sales={mine.stocks.brokers} rates={model.rates} onChange={onChange} />
+      <AccountsCard brokers={brokers} sales={mine.stocks.brokers} onChange={onChange} />
     </div>
   );
 }
