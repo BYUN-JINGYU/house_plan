@@ -23,8 +23,12 @@ def make_engine(url: str) -> Engine:
     url = normalize_url(url)
     if url.startswith("sqlite"):
         return create_engine(url, connect_args={"check_same_thread": False})
-    # 무료 DB는 쉬면 연결을 끊으므로 쓰기 전에 확인하고 5분마다 새로 맺는다
-    return create_engine(url, pool_pre_ping=True, pool_recycle=300, pool_size=3, max_overflow=2)
+    # 무료 DB는 쉬면 연결을 끊으므로 쓰기 전에 확인하고 5분마다 새로 맺는다.
+    # prepare_threshold=None: 연결 풀러(PgBouncer) 주소를 써도 준비된 문장 오류가 안 나게
+    return create_engine(
+        url, pool_pre_ping=True, pool_recycle=300, pool_size=3, max_overflow=2,
+        connect_args={"prepare_threshold": None},
+    )
 
 
 class Database:
