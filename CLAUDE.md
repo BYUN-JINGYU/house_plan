@@ -1,6 +1,7 @@
 # houseplan
 
-두 사람이 대출을 끼고 집을 살 자금 계획 웹앱. FastAPI(`backend/`) + React·Vite·TS(`frontend/`), 비밀번호 하나로 들어간다.
+두 사람이 대출을 끼고 집을 살 자금 계획 웹앱. FastAPI(`backend/`) + React·Vite·TS(`frontend/`).
+로그인은 `REQUIRE_LOGIN`으로 켜고 끈다. 배포는 꺼 두었다(`render.yaml`): 주소를 아는 누구나 보고 고친다.
 배포·로컬 실행은 README.
 
 ## 확인 명령

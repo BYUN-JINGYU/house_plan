@@ -19,6 +19,8 @@ def set_session_cookie(response: Response, c: Container) -> None:
 
 
 def require_session(request: Request, response: Response, c: Container = Depends(get_container)) -> None:
+    if not c.settings.require_login:
+        return
     token = request.cookies.get(COOKIE)
     if not c.tokens.valid(token):
         raise HTTPException(status_code=401, detail="로그인이 필요해요")

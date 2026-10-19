@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "sqlite:///./houseplan.db"
+    # false면 로그인 없이 연다: 주소를 아는 누구나 보고 고친다
+    require_login: bool = True
     # 비어 있으면 서버가 켜질 때마다 새로 만든다 (재시작하면 다시 로그인)
     session_secret: str = ""
     # 둘 중 하나: 해시(권장, python -m app.cli hash-password) 또는 평문

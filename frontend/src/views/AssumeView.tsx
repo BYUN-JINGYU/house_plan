@@ -14,7 +14,7 @@ import { FieldRow } from './assume/FieldRow';
 
 const changed = (plan: PlanDoc, key: keyof typeof DEFAULTS) => key in plan.overrides && plan.overrides[key] !== DEFAULTS[key];
 
-export function AssumeView({ onLogout }: { onLogout: () => void }) {
+export function AssumeView({ onLogout }: { onLogout?: () => void }) {
   const [plan, setPlan] = useDocSync(useSyncs().plan);
   const { model } = useModel();
   const setName = (key: 'a' | 'b', v: string) => setPlan({ ...plan, names: { ...plan.names, [key]: v } });
@@ -54,7 +54,7 @@ export function AssumeView({ onLogout }: { onLogout: () => void }) {
       </div>
       <div className="btn-row">
         <ConfirmButton label="가정을 모두 처음 값으로" confirm="한 번 더 누르면 되돌려요" onConfirm={() => setPlan({ ...plan, overrides: {} })} />
-        <button type="button" className="btn ghost" onClick={onLogout}>이 기기에서 나가기</button>
+        {onLogout && <button type="button" className="btn ghost" onClick={onLogout}>이 기기에서 나가기</button>}
       </div>
     </div>
   );

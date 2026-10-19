@@ -17,6 +17,7 @@ BASE = {
     b"x-content-type-options": b"nosniff",
     b"referrer-policy": b"no-referrer",
     b"x-frame-options": b"DENY",
+    b"x-robots-tag": b"noindex, nofollow",  # 검색엔진에 안 뜨게
     b"permissions-policy": b"camera=(), microphone=(), geolocation=()",
 }
 

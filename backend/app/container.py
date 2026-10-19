@@ -44,7 +44,9 @@ def default_provider() -> QuoteProvider:
 def build_container(settings: Settings, provider: QuoteProvider | None = None) -> Container:
     db = Database(settings.database_url)
     passwords = PasswordChecker(settings.app_password_hash, settings.app_password)
-    if passwords.problem:
+    if not settings.require_login:
+        log.warning("로그인을 껐어요. 주소를 아는 누구나 보고 고칠 수 있어요.")
+    elif passwords.problem:
         log.error(passwords.problem)
     secret = settings.session_secret
     if not secret:

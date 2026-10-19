@@ -9,7 +9,7 @@ export interface QuotesOut { quotes: QuoteBook; missing: string[] }
 export interface Backup { format: 'houseplan-backup'; version: 1; docs: Record<string, unknown>; ledger?: unknown[] }
 
 export const auth = {
-  me: () => request<{ ok: boolean }>('GET', '/api/auth/me'),
+  me: () => request<{ ok: boolean; open?: boolean }>('GET', '/api/auth/me'),
   login: (password: string) => request<void>('POST', '/api/auth/login', { password }),
   logout: () => request<void>('POST', '/api/auth/logout'),
 };

@@ -5,7 +5,7 @@ import type { Scenario } from '../domain/scenario';
 import { daysBetween, parseYmd } from '../domain/schedule';
 import { SaveBadge } from '../ui/SaveBadge';
 
-interface Props { title: string; s: Scenario; onLogout: () => void; children: ReactNode }
+interface Props { title: string; s: Scenario; onLogout?: () => void; children: ReactNode }
 
 function dday(s: Scenario): string {
   const days = daysBetween(s.asOf, s.closingDate);
@@ -26,9 +26,11 @@ export function Rail({ title, s, onLogout, children }: Props) {
         <p className="dday-label">잔금 {y}.{m}.{d}</p>
       </div>
       {children}
-      <div className="rail-foot">
-        <button type="button" className="btn ghost small" onClick={onLogout}>이 기기에서 나가기</button>
-      </div>
+      {onLogout && (
+        <div className="rail-foot">
+          <button type="button" className="btn ghost small" onClick={onLogout}>이 기기에서 나가기</button>
+        </div>
+      )}
     </aside>
   );
 }

@@ -17,7 +17,7 @@ import { SummaryView } from './views/SummaryView';
 import { tabFromHash, tabList, type TabId } from './views/tabs';
 import { TodoView } from './views/TodoView';
 
-function view(tab: TabId, go: (t: TabId) => void, onLogout: () => void): ReactNode {
+function view(tab: TabId, go: (t: TabId) => void, onLogout?: () => void): ReactNode {
   switch (tab) {
     case 'summary': return <SummaryView go={go} />;
     case 'a': return <PersonView who="a" />;
@@ -30,7 +30,7 @@ function view(tab: TabId, go: (t: TabId) => void, onLogout: () => void): ReactNo
   }
 }
 
-function Shell({ onLogout }: { onLogout: () => void }) {
+function Shell({ onLogout }: { onLogout?: () => void }) {
   const [tab, setTab] = useState<TabId>(() => tabFromHash(window.location.hash));
   const [plan] = useDocSync(useSyncs().plan);
   const { model } = useModel();
@@ -57,14 +57,14 @@ function Shell({ onLogout }: { onLogout: () => void }) {
 }
 
 export function App() {
-  const { state, login, logout } = useAuth();
+  const { state, open, login, logout } = useAuth();
   if (state === 'checking') return <Notice title="확인하는 중…" />;
   if (state === 'out') return <main className="login"><LoginView onLogin={login} /></main>;
   return (
     <>
       <DataProvider>
         <ModelProvider>
-          <Shell onLogout={() => void logout()} />
+          <Shell onLogout={open ? undefined : () => void logout()} />
         </ModelProvider>
       </DataProvider>
       {state === 'expired' && (

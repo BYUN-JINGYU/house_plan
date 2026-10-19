@@ -8,9 +8,11 @@ services:
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
+      - key: REQUIRE_LOGIN # false: 로그인 없이 연다 (주소를 아는 누구나 보고 고친다)
+        value: "false"
       - key: DATABASE_URL # Neon 등 무료 Postgres 연결 주소
         sync: false
-      - key: APP_PASSWORD # 들어갈 때 쓸 비밀번호 (12자 이상)
+      - key: APP_PASSWORD # REQUIRE_LOGIN이 true일 때 쓸 비밀번호 (12자 이상)
         sync: false
       - key: SESSION_SECRET
         generateValue: true

@@ -23,6 +23,13 @@ def test_health_is_open(client):
     assert client.get("/api/health").json() == {"ok": True}
 
 
+def test_open_mode_needs_no_login(settings, provider):
+    client = TestClient(create_app(settings.model_copy(update={"require_login": False}), provider=provider))
+    for path in PROTECTED:
+        assert client.get(path).status_code == 200, path
+    assert client.get("/api/auth/me").json() == {"ok": True, "open": True}
+
+
 def test_wrong_password_is_rejected(client):
     response = client.post("/api/auth/login", json={"password": "틀린 비밀번호"})
     assert response.status_code == 401
@@ -33,7 +40,7 @@ def test_login_sets_strict_httponly_cookie(client):
     response = client.post("/api/auth/login", json={"password": PASSWORD})
     cookie = response.headers["set-cookie"].lower()
     assert "httponly" in cookie and "samesite=strict" in cookie
-    assert client.get("/api/auth/me").json() == {"ok": True}
+    assert client.get("/api/auth/me").json() == {"ok": True, "open": False}
 
 
 def test_logout_clears_session(authed):
@@ -86,3 +93,4 @@ def test_security_headers(client):
     headers = client.get("/api/health").headers
     assert "frame-ancestors 'none'" in headers["content-security-policy"]
     assert headers["cache-control"] == "no-store"
+    assert headers["x-robots-tag"] == "noindex, nofollow"

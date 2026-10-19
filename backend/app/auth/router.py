@@ -46,5 +46,6 @@ def logout(response: Response, c: Container = Depends(get_container)) -> None:
 
 
 @router.get("/me", dependencies=[Depends(require_session)])
-def me() -> dict[str, bool]:
-    return {"ok": True}
+def me(c: Container = Depends(get_container)) -> dict[str, bool]:
+    """open이면 화면이 나가기 버튼을 숨긴다"""
+    return {"ok": True, "open": not c.settings.require_login}
