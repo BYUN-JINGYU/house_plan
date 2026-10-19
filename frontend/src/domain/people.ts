@@ -1,4 +1,5 @@
-// 사람별 자산(은행·주식·특별성과급·퇴직금)과 두 사람 합계. 금액은 만원
+// 사람별 자산(은행·주식·특별성과급·퇴직금), 달마다 월급, 두 사람 합계. 금액은 만원
+import { cleanMonthPay, type MonthPay } from './pay';
 import { quoteKey, type QuoteBook } from './pricing';
 import { severance, type RetireInput, type Severance } from './retire';
 import { personStocks, type Broker, type Holding, type PersonStocks, type SaleRates } from './stocks';
@@ -7,11 +8,11 @@ export type PersonKey = 'a' | 'b';
 export const PERSON_KEYS: PersonKey[] = ['a', 'b'];
 
 export interface Bank { id: string; name: string; amount: number }
-export interface Person { banks: Bank[]; brokers: Broker[]; opi2: number; retire: RetireInput }
+export interface Person { banks: Bank[]; brokers: Broker[]; opi2: number; retire: RetireInput; pay: MonthPay }
 export type People = Record<PersonKey, Person>;
 
 export const emptyRetire = (): RetireInput => ({ plan: 'severance', start: '', date: '', pay: 0, quote: 0, use: false });
-export const emptyPerson = (): Person => ({ banks: [], brokers: [], opi2: 0, retire: emptyRetire() });
+export const emptyPerson = (): Person => ({ banks: [], brokers: [], opi2: 0, retire: emptyRetire(), pay: {} });
 
 const obj = (v: unknown): Record<string, unknown> => (v && typeof v === 'object' ? (v as Record<string, unknown>) : {});
 const n = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
@@ -40,6 +41,7 @@ function person(p: Record<string, unknown>): Person {
     brokers: list(p.brokers).map(broker),
     opi2: n(p.opi2),
     retire: { plan, start: s(r.start), date: s(r.date), pay: n(r.pay), quote: n(r.quote), use: r.use === true },
+    pay: cleanMonthPay(p.pay),
   };
 }
 

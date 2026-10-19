@@ -16,19 +16,21 @@ export function todayKst(now: Date = new Date()): Ymd {
   return new Date(now.getTime() + 9 * 3_600_000).toISOString().slice(0, 10);
 }
 
-/** after < 월급날 < before 인 월급날 수 (월급날이 그달에 없으면 말일) */
-export function paydaysBetween(after: Ymd, before: Ymd, day: number): number {
-  if (before <= after) return 0;
+/** after < 월급날 < before 인 월급날 목록 (월급날이 그달에 없으면 말일) */
+export function paydayDates(after: Ymd, before: Ymd, day: number): Ymd[] {
+  if (before <= after) return [];
   const end = parseYmd(before);
   let { y, m } = parseYmd(after);
-  let count = 0;
+  const dates: Ymd[] = [];
   while (y < end.y || (y === end.y && m <= end.m)) {
     const pay = ymd(y, m, Math.min(Math.max(1, Math.round(day)), lastDay(y, m)));
-    if (pay > after && pay < before) count += 1;
+    if (pay > after && pay < before) dates.push(pay);
     [y, m] = m === 12 ? [y + 1, 1] : [y, m + 1];
   }
-  return count;
+  return dates;
 }
+
+export const paydaysBetween = (after: Ymd, before: Ymd, day: number): number => paydayDates(after, before, day).length;
 
 export function daysBetween(from: Ymd, to: Ymd): number {
   const f = parseYmd(from);

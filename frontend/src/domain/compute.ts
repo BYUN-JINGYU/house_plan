@@ -17,7 +17,8 @@ export function computePlan(plan: PlanDoc, people: People, book: QuoteBook, asOf
   const liveFx = plan.useLiveFx ? book[USDKRW]?.price : undefined;
   const rates: SaleRates = { usdkrw: liveFx ?? a.usdkrw, krTax: a.krTax, usTaxRate: a.usTaxRate, usDeduct: a.usDeduct };
   const hh = household(people, book, rates);
-  const s = buildScenario(a, { have: hh.have, bonus: hh.bonus }, asOf, plan.depositPaid);
+  const pay = { a: people.a.pay, b: people.b.pay };
+  const s = buildScenario(a, { have: hh.have, bonus: hh.bonus }, asOf, plan.depositPaid, pay);
   const c = closing(s);
   const alt = closing({ ...s, ggA: Math.max(s.ggA, GG_MAX_EACH), ggB: Math.max(s.ggB, GG_MAX_EACH) });
   return { a, rates, liveFx: liveFx !== undefined, hh, s, c, alt, o: outlook(s) };

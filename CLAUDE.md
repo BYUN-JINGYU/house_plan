@@ -14,7 +14,8 @@
 ## 지도
 
 - 돈 계산의 유일한 원천은 `frontend/src/domain/` (순수 함수, 테스트 동봉). 백엔드는 계산하지 않는다: 문서 저장, 가계부, 시세만.
-- `domain/compute.ts`가 문서 3개 + 시세 + 오늘 날짜 → 화면 숫자 전부. 날짜가 지난 수입(PI·PS)은 통장에 있다고 보고 뺀다(`scenario.ts`).
+- `domain/compute.ts`가 문서 3개 + 시세 + 오늘 날짜 → 화면 숫자 전부. 날짜가 지난 수입(월급·PI·PS)은 통장에 있다고 보고 뺀다(`scenario.ts`).
+- 월급은 사람별로 달마다 적는다(`pay.ts`, people 문서의 `pay`). 안 적은 달은 가정의 월 실수령(둘 합계)을 계약연봉 비율로 나눈 값.
 - 화면 상태: `state/sync.ts`의 `DocSync`가 문서(plan·people·checks)를 버전과 함께 자동 저장, 409면 서버 값으로 바꾼다.
 - 시세: `backend/app/quotes/` 공급자(Protocol) → `FallbackChain` → `QuoteService`(DB 캐시, TTL). 새 공급자는 `container.default_provider()`에 끼운다.
 - 의존성 조립은 `backend/app/container.py` 한 곳. 테스트는 `create_app(settings, provider=가짜)`로 바꿔 끼운다.

@@ -34,7 +34,7 @@ export function closing(s: Scenario): Closing {
     ggStamp: s.ggStamp, guar: gg * s.guarRate * s.ggTerm, move: s.move, repair: s.repair,
   };
   const inflows: Inflows = {
-    save: s.monthsLeft * (s.netMonth - s.living),
+    save: s.payLeft - s.monthsLeft * s.living,
     pi: s.piDue ? s.pi : 0,
     ps: s.psDue ? (s.salA + s.salB) * s.ps2027 * s.netRatio : 0,
     holiday: s.holidayDue ? s.holiday * s.netRatio : 0,
@@ -47,7 +47,7 @@ export function closing(s: Scenario): Closing {
   const inflow = total(inflows);
   const req = need - paid - inflow;
   const buffer = s.bufferM * total(monthlyOut(s));
-  const depCash = s.have + s.depMonths * (s.netMonth - s.living) + (s.depPiDue ? s.pi : 0);
+  const depCash = s.have + s.depPay - s.depMonths * s.living + (s.depPiDue ? s.pi : 0);
   return {
     gg, own, costs, costSum, need, paid, inflows, inflow, req, buffer, reqAll: req + buffer,
     have: s.have, gap: s.have - req - buffer, deposit, depCash, depGap: depCash - deposit,
