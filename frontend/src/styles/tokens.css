@@ -1,48 +1,62 @@
-/* 색·글꼴 토큰. 통장 장부: 연한 종이, 괘선, 오른쪽 정렬 금액, 판정은 붉은 도장 하나 */
+/* 색·글자·간격 토큰. 읽기 쉬운 것이 먼저: 진한 글자, 흰 카드, 숫자는 굵게 */
 :root {
   color-scheme: light;
-  --paper: #f3f6f3;
-  --sheet: #fbfcfa;
-  --ink: #16211d;
-  --ink-2: #4a5852;
-  --muted: #5d6a64;
-  --rule: #d8e0db;
-  --rule-strong: #b2c0b8;
-  --accent: #0d6a5a;
+  --page: #eef1f4;
+  --card: #ffffff;
+  --ink: #121820;
+  --ink-2: #39434f;
+  --muted: #59646f;
+  --line: #dde2e8;
+  --line-strong: #b9c2cc;
+  --field: #f7f9fb;
+  --accent: #0a6b5e;
   --accent-ink: #ffffff;
-  --accent-wash: #e1eee8;
-  --seal: #c23a2c;
-  --good: #1b7a39;
+  --accent-wash: #e1f0ec;
+  --good: #12703a;
+  --good-wash: #e2f3e8;
   --bad: #b3261e;
-  --bar: #aebdb5;
-  --shadow: rgba(22, 33, 29, 0.12);
+  --bad-wash: #fbe8e6;
+  --neutral-wash: #e7ebf0;
+  --shadow: 0 1px 2px rgba(18, 24, 32, 0.06);
   /* 그래프 계열색 (검증: 인접 색약 ΔE ≥ 9.1). s3·s4는 밝아서 값 글자를 항상 같이 보여 준다 */
   --s1: #2a78d6;
   --s2: #eb6834;
   --s3: #1baf7a;
   --s4: #eda100;
-  --font-display: "Gowun Batang", "Nanum Myeongjo", "AppleMyungjo", serif;
-  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --t-cap: 13px;
+  --t-small: 14px;
+  --t-body: 16px;
+  --t-title: 18px;
+  --t-page: 24px;
+  --t-stat: clamp(24px, 2.05vw, 28px);
+  --t-hero: clamp(34px, 4.4vw, 46px);
+  --r-card: 16px;
+  --r-control: 12px;
+  --gap: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --paper: #0e1412;
-    --sheet: #151c19;
-    --ink: #e6ede9;
-    --ink-2: #b2bfb9;
-    --muted: #8b9992;
-    --rule: #26302c;
-    --rule-strong: #3a4842;
-    --accent: #4cb8a1;
+    --page: #0e1216;
+    --card: #161b21;
+    --ink: #eaeff4;
+    --ink-2: #c3ccd6;
+    --muted: #9aa5b1;
+    --line: #28303a;
+    --line-strong: #3a4552;
+    --field: #1c2229;
+    --accent: #4fc3a9;
     --accent-ink: #06231d;
-    --accent-wash: #17302a;
-    --seal: #e85d4e;
-    --good: #55c97a;
-    --bad: #f2786d;
-    --bar: #43524b;
-    --shadow: rgba(0, 0, 0, 0.5);
+    --accent-wash: #12302a;
+    --good: #5ccf89;
+    --good-wash: #13301f;
+    --bad: #ff8a80;
+    --bad-wash: #3a1715;
+    --neutral-wash: #232a32;
+    --shadow: none;
     --s1: #3987e5;
     --s2: #d95926;
     --s3: #199e70;
@@ -52,21 +66,23 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #0e1412;
-  --sheet: #151c19;
-  --ink: #e6ede9;
-  --ink-2: #b2bfb9;
-  --muted: #8b9992;
-  --rule: #26302c;
-  --rule-strong: #3a4842;
-  --accent: #4cb8a1;
+  --page: #0e1216;
+  --card: #161b21;
+  --ink: #eaeff4;
+  --ink-2: #c3ccd6;
+  --muted: #9aa5b1;
+  --line: #28303a;
+  --line-strong: #3a4552;
+  --field: #1c2229;
+  --accent: #4fc3a9;
   --accent-ink: #06231d;
-  --accent-wash: #17302a;
-  --seal: #e85d4e;
-  --good: #55c97a;
-  --bad: #f2786d;
-  --bar: #43524b;
-  --shadow: rgba(0, 0, 0, 0.5);
+  --accent-wash: #12302a;
+  --good: #5ccf89;
+  --good-wash: #13301f;
+  --bad: #ff8a80;
+  --bad-wash: #3a1715;
+  --neutral-wash: #232a32;
+  --shadow: none;
   --s1: #3987e5;
   --s2: #d95926;
   --s3: #199e70;

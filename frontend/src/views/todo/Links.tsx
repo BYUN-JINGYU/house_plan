@@ -18,9 +18,8 @@ export function Links({ links, onChange }: Props) {
     setUrl('');
   };
   return (
-    <div>
-      <h2 className="gap-top">참고 링크</h2>
-      <ul className="sources">
+    <>
+      <ul className="list sources">
         {links.map((l) => (
           <li key={l.id}>
             <a href={l.url} target="_blank" rel="noopener noreferrer">{l.title}</a>
@@ -33,6 +32,6 @@ export function Links({ links, onChange }: Props) {
         <TextInput aria-label="링크 주소" placeholder="https://" maxLength={400} value={url} onValue={setUrl} />
         <button type="submit" className="btn ghost" disabled={!valid}>추가</button>
       </form>
-    </div>
+    </>
   );
 }

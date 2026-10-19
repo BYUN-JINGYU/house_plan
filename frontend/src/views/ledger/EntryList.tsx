@@ -12,15 +12,15 @@ interface Props {
 }
 
 export function EntryList({ entries, names, onEdit, onRemove }: Props) {
-  if (!entries.length) return <p className="hint">이 달 기록이 아직 없어요.</p>;
+  if (!entries.length) return <p className="hint">이 달 기록이 아직 없어요. 위에서 적어 보세요.</p>;
   return (
-    <ul className="entries">
+    <ul className="list entries">
       {entries.map((e) => (
         <li key={e.id}>
           <span className="e-day">{Number(e.day.slice(8))}일</span>
           <span className="e-what">
             {e.category}
-            {(e.memo || e.who) && <small>{[e.who ? names[e.who] : '', e.memo].filter(Boolean).join(' · ')}</small>}
+            {(e.memo || e.who) && <small>{[e.who ? names[e.who] : '', e.memo].filter(Boolean).join(', ')}</small>}
           </span>
           <strong className={`e-amt ${e.kind}`}>{e.kind === 'in' ? '+' : '−'}{wonFull(e.amount)}</strong>
           <span className="e-tools">

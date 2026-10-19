@@ -1,8 +1,8 @@
-// 잔금 이후 숫자 세 개: 매달 남는 돈, 금고 만기 때 남는 금고, 금고 다 갚는 때
+// 잔금 이후 숫자 세 개: 매달 남는 돈, 금고 만기 때 남는 대출, 금고 다 갚는 때
 import { compactWon, won } from '../../domain/format';
 import type { Scenario } from '../../domain/scenario';
 import { monthlyGroups, type Outlook } from '../../domain/yearly';
-import { Tile } from '../../ui/bits';
+import { Stat } from '../../ui/bits';
 
 function bonusText(need: number | null): string {
   if (need == null) return '특별성과급으로도 못 갚아요';
@@ -17,13 +17,13 @@ export function SummaryTiles({ s, o }: { s: Scenario; o: Outlook }) {
   const termYear = s.closeYear + Math.round(s.ggTerm);
   const end = o.payoff?.split('~')[1];
   return (
-    <div className="tiles">
-      <Tile label="잔금 후 매달 남는 돈" value={won(now.left)} tone={now.left < 0 ? 'bad' : undefined}
+    <div className="stats">
+      <Stat label="잔금 후 매달 남는 돈" value={won(now.left)} tone={now.left < 0 ? 'bad' : ''}
         sub={<span className={later.left < 0 ? 'bad' : ''}>{graceYear}년 {s.closeMonth}월부터 {won(later.left)}</span>} />
-      <Tile label="금고 만기 때 남는 대출" value={won(o.atMaturity)} tone={o.atMaturity > 0.5 ? 'bad' : 'good'}
+      <Stat label="금고 만기 때 남는 대출" value={won(o.atMaturity)} tone={o.atMaturity > 0.5 ? 'bad' : 'good'}
         sub={<><span className="line">{termYear}년 {s.closeMonth}월 만기</span><span className="line">{bonusText(o.bonusNeeded)}</span></>} />
-      <Tile label="금고 다 갚는 때" value={end ? `${end.replace('.', '년 ')}월` : '13년 넘게'}
-        sub={end ? `${o.payoff} 중 완납` : '가정을 바꿔 보세요'} />
+      <Stat label="금고 다 갚는 때" value={end ? `${end.replace('.', '년 ')}월` : '13년 넘게'}
+        sub={end ? `${o.payoff} 사이` : '가정을 바꿔 보세요'} />
     </div>
   );
 }

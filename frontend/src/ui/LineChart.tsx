@@ -75,7 +75,7 @@ export function LineChart({ labels, fullLabels, series, label, helpId, format, a
       <svg role="img" aria-label={label} viewBox={`0 0 ${width} ${HEIGHT}`} width={width} height={HEIGHT}>
         {g.ticks.map((t) => (
           <g key={t}>
-            <line className={t === 0 ? 'axis' : 'grid'} x1={MARGIN.left} x2={width - MARGIN.right} y1={g.y(t)} y2={g.y(t)} />
+            <line className={t === 0 ? 'axis' : 'gridline'} x1={MARGIN.left} x2={width - MARGIN.right} y1={g.y(t)} y2={g.y(t)} />
             <text className="tick" x={MARGIN.left - 8} y={g.y(t)} textAnchor="end" dominantBaseline="middle">{axisFormat(t)}</text>
           </g>
         ))}

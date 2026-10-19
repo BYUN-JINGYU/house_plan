@@ -9,7 +9,7 @@ function isBackup(v: unknown): v is Backup {
 
 function summary(b: Backup): string {
   const docs = Object.keys(b.docs ?? {}).length;
-  const ledger = Array.isArray(b.ledger) ? ` · 가계부 ${b.ledger.length}줄` : ' · 가계부는 그대로';
+  const ledger = Array.isArray(b.ledger) ? `, 가계부 ${b.ledger.length}줄` : ', 가계부는 그대로';
   return `문서 ${docs}개${ledger}`;
 }
 
@@ -55,10 +55,10 @@ export function BackupCard() {
   };
 
   return (
-    <div className="card">
-      <h2>백업</h2>
-      <p className="hint">무료 DB라 가끔 내려받아 두세요. 파일 하나로 되살릴 수 있어요.</p>
-      <div className="btn-row">
+    <section className="card">
+      <div className="card-head"><h2>백업</h2></div>
+      <p className="sub">무료 DB라 가끔 파일로 내려받아 두세요.</p>
+      <div className="btn-row gap-y">
         <button type="button" className="btn ghost" onClick={() => void download()}>내려받기</button>
         <button type="button" className="btn ghost" onClick={() => file.current?.click()}>불러오기</button>
         <input ref={file} type="file" accept="application/json,.json" hidden
@@ -74,6 +74,6 @@ export function BackupCard() {
         </div>
       )}
       {status && <p className="note">{status}</p>}
-    </div>
+    </section>
   );
 }

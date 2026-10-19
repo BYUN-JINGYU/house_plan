@@ -1,47 +1,36 @@
-// 요약 맨 위 판정: 가능 / 얼마 부족 / 얼마 필요 + 도장
-import { useEffect, useRef } from 'react';
+// 요약 맨 위 판정: 큰 숫자 한 줄 + 상태 배지(가능 / 부족 / 판정 전) + 한 줄 설명
 import type { Closing } from '../../domain/closing';
 import { GG_MAX_EACH } from '../../domain/compute';
 import { won } from '../../domain/format';
 import type { Scenario } from '../../domain/scenario';
 import { dateLabel } from '../../domain/schedule';
+import { Badge, type Tone } from '../../ui/bits';
 
-type Kind = 'ok' | 'short' | null;
+interface Words { head: string; sub: string; tone: Tone; badge: string }
 
-function words(s: Scenario, c: Closing, alt: Closing): { head: string; sub: string; kind: Kind } {
+function words(s: Scenario, c: Closing, alt: Closing): Words {
   if (c.have <= 0) {
-    return { head: `${won(c.reqAll)} 원 필요`, sub: '지금 가진 돈이 이만큼이면 돼요. 사람 탭에 자산을 넣으면 판정해요.', kind: null };
+    return { head: `${won(c.reqAll)} 원 필요`, sub: '사람 탭에 자산을 넣으면 가능한지 알려 줘요.', tone: '', badge: '판정 전' };
   }
   if (c.gap >= 0) {
-    return { head: `${s.closeMonth}월 잔금 가능`, sub: `비상금 ${s.bufferM}개월치를 빼고도 ${won(c.gap)} 남아요.`, kind: 'ok' };
+    return { head: `${won(c.gap)} 원 여유`, sub: `비상금 ${s.bufferM}개월치를 빼고도 남아요.`, tone: 'good', badge: '잔금 가능' };
   }
   const max = won(GG_MAX_EACH);
   const sub = alt.gg <= c.gg ? `필요한 돈은 ${won(c.reqAll)}이에요.`
     : alt.gap >= 0 ? `금고를 1인 ${max}으로 늘리면 가능해요.` : `금고를 1인 ${max}으로 늘려도 ${won(-alt.gap)} 부족해요.`;
-  return { head: `${won(-c.gap)} 원 부족`, sub, kind: 'short' };
+  return { head: `${won(-c.gap)} 원 부족`, sub, tone: 'bad', badge: '부족' };
 }
 
 export function Verdict({ s, c, alt }: { s: Scenario; c: Closing; alt: Closing }) {
-  const { head, sub, kind } = words(s, c, alt);
-  const seal = useRef<HTMLDivElement>(null);
-  const before = useRef<Kind>(kind);
-  useEffect(() => {
-    if (before.current === kind || !seal.current) return;
-    before.current = kind;
-    seal.current.classList.remove('press');
-    void seal.current.offsetWidth;
-    seal.current.classList.add('press');
-  }, [kind]);
+  const w = words(s, c, alt);
   return (
-    <div className={`verdict${kind ? ' stamped' : ''}`}>
-      <p className="eyebrow">{dateLabel(s.closingDate)} 잔금</p>
-      <p className="headline">{head}</p>
-      <p className="sub">{sub}</p>
-      {kind && (
-        <div ref={seal} className="seal" data-kind={kind} aria-hidden="true">
-          <span>{kind === 'ok' ? '가능' : '부족'}</span>
-        </div>
-      )}
-    </div>
+    <section className="hero" aria-live="polite">
+      <p className="hero-when">{dateLabel(s.closingDate)} 잔금 기준</p>
+      <div className="hero-main">
+        <h1 className="hero-num">{w.head}</h1>
+        <Badge tone={w.tone}>{w.badge}</Badge>
+      </div>
+      <p className="hero-sub">{w.sub}</p>
+    </section>
   );
 }

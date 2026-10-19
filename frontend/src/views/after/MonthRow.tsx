@@ -4,7 +4,9 @@ import { StackBar } from '../../ui/StackBar';
 
 interface Groups { income: number; living: number; house: number; debt: number; left: number }
 
-export function MonthRow({ title, g }: { title: string; g: Groups }) {
+interface Props { title: string; sub: string; g: Groups }
+
+export function MonthRow({ title, sub, g }: Props) {
   const parts = [
     { key: 'living', label: '생활비', v: g.living, cls: 's1' },
     { key: 'house', label: '관리비·재산세', v: g.house, cls: 's2' },
@@ -13,12 +15,19 @@ export function MonthRow({ title, g }: { title: string; g: Groups }) {
   ].map((p) => ({ ...p, text: won(p.v) }));
   return (
     <div className="mrow">
-      <p className="mhead">
-        <span>{title}</span>
-        <strong className={g.left < 0 ? 'bad' : ''}>남는 돈 {won(g.left)}</strong>
+      <div className="mhead">
+        <p className="mtitle">{title}<small>{sub}</small></p>
+        <p className={`mleft ${g.left < 0 ? 'bad' : ''}`}>
+          {g.left > 0 && <span className="sw s4" aria-hidden="true" />}
+          남는 돈 {won(g.left)}
+        </p>
+      </div>
+      <StackBar parts={parts} whole={Math.max(g.income, g.living + g.house + g.debt)} label={`${title}, ${sub}`} />
+      <p className="mdetail">
+        {parts.slice(0, 3).map((p) => (
+          <span key={p.key}><span className={`sw ${p.cls}`} aria-hidden="true" />{p.label} {p.text}</span>
+        ))}
       </p>
-      <StackBar parts={parts} whole={Math.max(g.income, g.living + g.house + g.debt)} label={title} />
-      <p className="mdetail">생활비 {won(g.living)} · 관리비·재산세 {won(g.house)} · 대출 {won(g.debt)}</p>
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function LoginView({ onLogin, again = false }: Props) {
 
   return (
     <form className="card login-card" onSubmit={submit}>
-      <p className="eyebrow">우리 집 자금 계획</p>
+      <p className="app-name">우리 집 자금 계획</p>
       <h1>{again ? '다시 로그인해 주세요' : '비밀번호를 넣어 주세요'}</h1>
       <input className="text-input" type="password" autoComplete="current-password" autoFocus aria-label="비밀번호"
         value={password} onChange={(e) => setPassword(e.target.value)} />

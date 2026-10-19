@@ -1,4 +1,4 @@
-// 종목 한 줄: 코드·이름 / 수량·평단·(매수 환율)·현재가 → 팔면 받는 돈
+// 종목 한 줄: 코드·이름·팔면 받는 돈 / 수량·평단·(매수 환율)·현재가
 import { num, won } from '../../domain/format';
 import type { Holding, PricedSale } from '../../domain/stocks';
 import { NumberInput, TextInput } from '../../ui/inputs';
@@ -10,7 +10,7 @@ interface Props { h: Holding; sale: PricedSale; onChange: (p: Partial<Holding>) 
 function priceNote(sale: PricedSale): string {
   const { from, quote } = sale.priced;
   if (from === 'manual') return '직접 넣은 값';
-  if (from === 'live' && quote) return `${quote.asOf.slice(5).replace('-', '/')} ${SOURCE[quote.source] ?? quote.source}${quote.stale ? ' (오래됨)' : ''}`;
+  if (from === 'live' && quote) return `${quote.asOf.slice(5).replace('-', '/')} ${SOURCE[quote.source] ?? quote.source}${quote.stale ? ', 오래됨' : ''}`;
   return '시세 없음';
 }
 
@@ -30,9 +30,9 @@ export function HoldingRow({ h, sale, onChange, onRemove }: Props) {
       </div>
       <div className="h-bottom">
         <label className="mini">수량<NumberInput kind="num" value={h.qty} onValue={(qty) => onChange({ qty })} /></label>
-        <label className="mini">평단 {us ? '$' : '원'}<NumberInput kind="num" value={h.avg} onValue={(avg) => onChange({ avg })} /></label>
+        <label className="mini">평단 ({us ? '$' : '원'})<NumberInput kind="num" value={h.avg} onValue={(avg) => onChange({ avg })} /></label>
         {us && <label className="mini">매수 환율<NumberInput kind="num" value={h.fxBuy} placeholder="모르면 비움" onValue={(fxBuy) => onChange({ fxBuy })} /></label>}
-        <label className="mini">현재가 {us ? '$' : '원'}<NumberInput kind="num" value={h.manual} placeholder={live || '직접 입력'} onValue={(manual) => onChange({ manual })} /></label>
+        <label className="mini">현재가 ({us ? '$' : '원'})<NumberInput kind="num" value={h.manual} placeholder={live || '직접 입력'} onValue={(manual) => onChange({ manual })} /></label>
         <span className="src">{priceNote(sale)}</span>
       </div>
     </li>

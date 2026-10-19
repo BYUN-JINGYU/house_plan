@@ -12,29 +12,29 @@ export function BrokerCard({ broker, sale, onChange, onRemove }: Props) {
   const set = (patch: Partial<Broker>) => onChange({ ...broker, ...patch });
   const holdings = broker.holdings;
   return (
-    <div className="card broker">
+    <section className="card broker">
       <div className="card-head">
         <TextInput className="title-input" aria-label="증권사 이름" placeholder="증권사 이름" value={broker.name} onValue={(name) => set({ name })} />
-        <strong title="팔면 받는 돈">{won(sale.net)}</strong>
+        <strong className="card-value" title="팔면 받는 돈">{won(sale.net)}</strong>
       </div>
       <div className="fees">
         <label className="mini">국내 수수료<NumberInput kind="pct" value={broker.krFee} onValue={(krFee) => set({ krFee })} /></label>
         <label className="mini">해외 수수료<NumberInput kind="pct" value={broker.usFee} onValue={(usFee) => set({ usFee })} /></label>
         <label className="mini">환전 수수료<NumberInput kind="pct" value={broker.fxFee} onValue={(fxFee) => set({ fxFee })} /></label>
       </div>
-      <ul className="holdings">
+      <ul className="list holdings">
         {holdings.map((h, i) => (
           <HoldingRow key={h.id} h={h} sale={sale.rows[i]}
             onChange={(p) => set({ holdings: patchIn(holdings, h.id, p) })}
             onRemove={() => set({ holdings: removeFrom(holdings, h.id) })} />
         ))}
       </ul>
-      <p className="sum-line">평가액 {won(sale.gross)} · 수수료·세금 {won(sale.fees)} · 팔면 {won(sale.net)}</p>
+      {holdings.length > 0 && <p className="sum-line">평가액 {won(sale.gross)}, 수수료·세금 {won(sale.fees)}</p>}
       <div className="card-foot">
         <button type="button" className="linkish" onClick={() => set({ holdings: [...holdings, newHolding('KR')] })}>+ 국내 종목</button>
         <button type="button" className="linkish" onClick={() => set({ holdings: [...holdings, newHolding('US')] })}>+ 미국 종목</button>
         <ConfirmButton className="linkish danger" label="계좌 지우기" confirm="한 번 더 누르면 지워요" onConfirm={onRemove} />
       </div>
-    </div>
+    </section>
   );
 }

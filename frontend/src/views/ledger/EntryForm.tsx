@@ -51,7 +51,7 @@ export function EntryForm({ month, names, editing, onSubmit, onCancel }: Props) 
 
   return (
     <form className="card entry-form" onSubmit={submit}>
-      <h2>{editing ? '고치기' : '적기'}</h2>
+      <div className="card-head"><h2>{editing ? '기록 고치기' : '새로 적기'}</h2></div>
       <div className="entry-grid">
         <DateInput aria-label="날짜" value={draft.day} onValue={(day) => set({ day })} />
         <Seg label="지출 또는 수입" options={KINDS} value={draft.kind} onChange={(kind) => set({ kind, category: LEDGER_CATS[kind][0] })} />

@@ -5,6 +5,7 @@ import { axisWon, compactWon, pct, won } from '../domain/format';
 import type { Scenario } from '../domain/scenario';
 import { monthlyGroups, type Outlook } from '../domain/yearly';
 import { useModel } from '../state/ModelProvider';
+import { Card, More, PageHead } from '../ui/bits';
 import { LineChart } from '../ui/LineChart';
 import { MonthRow } from './after/MonthRow';
 import { YearTable } from './after/YearTable';
@@ -29,32 +30,32 @@ export function AfterView() {
   const graceYear = s.closeYear + Math.round(s.coGrace);
   const data = chartData(s, o);
   return (
-    <div className="split">
-      <section className="col">
-        <h2>월 실수령 {won(s.netMonth)}은 어디로</h2>
-        <MonthRow title={`${s.closeYear}년 ${s.closeMonth}월~ (사내대출 거치 중)`} g={monthlyGroups(s, o.rows[0])} />
-        <MonthRow title={`${graceYear}년 ${s.closeMonth}월~ (사내대출 원리금)`} g={monthlyGroups(s, o.afterGrace)} />
-        <div className="notes">
-          <p className="note">성과급은 빼고 봤어요.</p>
-          <p className="note">대출 갚는 돈 = 사내대출 + 금고 이자 + 이자 혜택 과세</p>
-          <p className="note">사내대출 실효금리 {pct(effectiveCoRate(s), 2)}</p>
-        </div>
-      </section>
-      <section className="col">
-        <h2>대출 잔액과 모은 돈</h2>
-        <ul className="legend">
-          {data.series.map((x) => <li key={x.cls}><span className={`key ${x.cls}`} />{x.name}</li>)}
-        </ul>
-        <LineChart {...data} label="대출 잔액과 모은 돈 그래프" helpId="chart-help" format={won} axisFormat={axisWon} endFormat={compactWon} />
-        <div className="notes" id="chart-help">
-          <p className="note">그래프에 올리거나 ← → 키로 해마다 볼 수 있어요.</p>
-          <p className="note">남는 돈은 금고부터 갚는다고 봤어요.</p>
-        </div>
-        <button type="button" className="linkish" aria-expanded={table} onClick={() => setTable(!table)}>
-          {table ? '표 닫기' : '표로 보기'}
-        </button>
-        {table && <YearTable o={o} />}
-      </section>
+    <div className="page">
+      <PageHead title="잔금 후" sub="월급이 어디로 가고, 대출이 언제 줄어드는지 봐요." />
+      <div className="grid even">
+        <Card title="월 실수령은 어디로" value={won(s.netMonth)}>
+          <MonthRow title={`${s.closeYear}년 ${s.closeMonth}월부터`} sub="사내대출 거치" g={monthlyGroups(s, o.rows[0])} />
+          <MonthRow title={`${graceYear}년 ${s.closeMonth}월부터`} sub="사내대출 원리금" g={monthlyGroups(s, o.afterGrace)} />
+          <More>
+            <p>성과급은 빼고 봤어요.</p>
+            <p>대출 갚는 돈은 사내대출, 금고 이자, 이자 혜택 과세를 더한 값이에요.</p>
+            <p>사내대출 실효금리는 {pct(effectiveCoRate(s), 2)}예요.</p>
+          </More>
+        </Card>
+        <Card title="대출 잔액과 모은 돈">
+          <ul className="legend">
+            {data.series.map((x) => <li key={x.cls} className={x.cls}><span className="key" />{x.name}</li>)}
+          </ul>
+          <LineChart {...data} label="대출 잔액과 모은 돈 그래프" helpId="chart-help" format={won} axisFormat={axisWon} endFormat={compactWon} />
+          <p className="note" id="chart-help">남는 돈은 금고부터 갚는다고 봤어요.</p>
+          <div className="card-foot">
+            <button type="button" className="linkish" aria-expanded={table} onClick={() => setTable(!table)}>
+              {table ? '표 닫기' : '해마다 숫자를 표로 보기'}
+            </button>
+          </div>
+          {table && <YearTable o={o} />}
+        </Card>
+      </div>
     </div>
   );
 }

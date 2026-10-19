@@ -16,14 +16,12 @@ export function Checklist({ items, onChange }: Props) {
     onChange([...items, { id: crypto.randomUUID(), group: group || '기타', text: text.trim(), done: false }]);
     setText('');
   };
-  const left = items.filter((x) => !x.done).length;
   return (
-    <div>
-      <h2>확인할 것 <small>{left}개 남음</small></h2>
+    <>
       {groups.map((g) => (
         <div key={g} className="checkgroup">
-          <p className="eyebrow">{g}</p>
-          <ul className="checks">
+          <h3 className="group-title">{g}</h3>
+          <ul className="list checks">
             {items.filter((x) => x.group === g).map((x) => (
               <li key={x.id}>
                 <label className="check">
@@ -42,6 +40,6 @@ export function Checklist({ items, onChange }: Props) {
         <TextInput aria-label="확인할 것" placeholder="확인할 것 추가" maxLength={120} value={text} onValue={setText} />
         <button type="submit" className="btn ghost">추가</button>
       </form>
-    </div>
+    </>
   );
 }

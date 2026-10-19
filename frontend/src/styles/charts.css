@@ -1,0 +1,62 @@
+/* 그래프: 쌓인 막대(조각 사이 2px 틈, 양 끝만 둥글게), 선 그래프, 달별 막대 */
+.stack-wrap { position: relative; margin: 4px 0; }
+.stack { display: flex; gap: 2px; height: 22px; }
+.piece { display: block; height: 100%; min-width: 4px; background: var(--c); }
+.piece:first-child { border-radius: 6px 0 0 6px; }
+.piece:last-child { border-radius: 0 6px 6px 0; }
+.piece:only-child { border-radius: 6px; }
+.piece.short { background: repeating-linear-gradient(135deg, transparent 0 5px, var(--bad) 5px 6.5px); box-shadow: inset 0 0 0 1.5px var(--bad); }
+.bar-tip {
+  position: absolute; bottom: calc(100% + 8px); transform: translateX(-50%); z-index: 3; pointer-events: none;
+  padding: 6px 10px; border-radius: 8px; background: var(--ink); color: var(--card);
+  font-size: var(--t-small); font-weight: 600; white-space: nowrap;
+}
+.bar-tip strong { font-variant-numeric: tabular-nums; margin-left: 4px; }
+
+.mrow + .mrow { margin-top: 20px; }
+.mhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.mtitle { font-weight: 700; line-height: 1.4; }
+.mtitle small { display: block; font-size: var(--t-small); color: var(--ink-2); }
+.mleft { display: inline-flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mleft.bad { color: var(--bad); }
+.mdetail { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--t-small); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.mdetail span { display: inline-flex; align-items: center; gap: 6px; }
+
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart .gridline { stroke: var(--line); stroke-width: 1; }
+.chart .axis { stroke: var(--line-strong); stroke-width: 1; }
+.chart .tick { fill: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.chart .end { fill: var(--ink); font-size: 14px; font-weight: 700; }
+.chart .line { fill: none; stroke: var(--c); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.chart circle.dot { fill: var(--c); stroke: var(--card); stroke-width: 2; }
+.chart .cross { stroke: var(--ink-2); stroke-width: 1; }
+.chart .hit { fill: transparent; cursor: crosshair; }
+.chart-tip {
+  position: absolute; top: 6px; min-width: 190px; padding: 10px 12px; pointer-events: none;
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: 0 8px 24px rgba(18, 24, 32, 0.16);
+  font-size: var(--t-small);
+}
+.chart-tip.right { transform: translateX(14px); }
+.chart-tip.left { transform: translateX(calc(-100% - 14px)); }
+.tip-head { color: var(--ink-2); font-weight: 600; margin-bottom: 4px; }
+.tip-row { display: flex; align-items: center; gap: 8px; }
+.tip-row strong { font-variant-numeric: tabular-nums; }
+.tip-row span:last-child { color: var(--ink-2); }
+
+.month-bars { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.month-bars caption { text-align: left; color: var(--muted); font-size: var(--t-small); padding-bottom: 8px; }
+.month-bars th { width: 44px; text-align: left; font-weight: 600; color: var(--ink-2); padding: 8px 0; border-top: 1px solid var(--line); }
+.month-bars td { padding: 8px 0 8px 8px; border-top: 1px solid var(--line); }
+.month-bars td:last-child { width: 84px; text-align: right; font-weight: 700; white-space: nowrap; }
+.month-bars td.empty { width: auto; text-align: left; font-size: var(--t-small); font-weight: 500; color: var(--muted); }
+.mb { display: flex; align-items: center; gap: 8px; min-height: 20px; }
+.mb .bar { display: block; height: 10px; min-width: 3px; border-radius: 0 5px 5px 0; background: var(--c); }
+.mb .v { font-size: var(--t-small); color: var(--ink-2); white-space: nowrap; }
+
+.table-wrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+thead th { color: var(--ink-2); font-weight: 700; border-bottom: 2px solid var(--line-strong); }
+tbody th { text-align: left; font-weight: 600; color: var(--ink-2); }
+caption { text-align: left; color: var(--muted); font-size: var(--t-small); padding-bottom: 8px; }

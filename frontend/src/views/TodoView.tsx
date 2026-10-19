@@ -4,9 +4,11 @@ import { timeline } from '../domain/timeline';
 import { useSyncs } from '../state/DataProvider';
 import { useModel } from '../state/ModelProvider';
 import { useDocSync } from '../state/sync';
+import { Card, PageHead } from '../ui/bits';
 import { AddEvent } from './todo/AddEvent';
 import { Checklist } from './todo/Checklist';
 import { Links } from './todo/Links';
+import { Timeline } from './todo/Timeline';
 
 export function TodoView() {
   const { model } = useModel();
@@ -14,31 +16,24 @@ export function TodoView() {
   const [checks, setChecks] = useDocSync(syncs.checks);
   const [plan, setPlan] = useDocSync(syncs.plan);
   const items = timeline(model.s, model.c, model.o, plan.events);
+  const left = checks.items.filter((x) => !x.done).length;
   return (
-    <div className="split even">
-      <section className="col">
-        <h2>날짜</h2>
-        <ol className="timeline">
-          {items.map((x) => (
-            <li key={`${x.when}-${x.what}`} className={`${x.key ? 'pin' : ''} ${x.past ? 'past' : ''}`}>
-              <span className="when">{x.when}</span>
-              <span className="what">
-                {x.past && <span className="done-mark" aria-label="지남">✓</span>}
-                {x.what}
-                {x.eventId && (
-                  <button type="button" className="icon-btn" aria-label={`${x.what} 지우기`}
-                    onClick={() => setPlan({ ...plan, events: removeFrom(plan.events, x.eventId!) })}>×</button>
-                )}
-              </span>
-            </li>
-          ))}
-        </ol>
-        <AddEvent onAdd={(e) => setPlan({ ...plan, events: [...plan.events, e] })} />
-      </section>
-      <section className="col">
-        <Checklist items={checks.items} onChange={(next) => setChecks({ ...checks, items: next })} />
-        <Links links={checks.links} onChange={(next) => setChecks({ ...checks, links: next })} />
-      </section>
+    <div className="page">
+      <PageHead title="할 일" sub={`확인할 것이 ${left}개 남았어요.`} />
+      <div className="grid even">
+        <Card title="날짜">
+          <Timeline items={items} onRemove={(id) => setPlan({ ...plan, events: removeFrom(plan.events, id) })} />
+          <AddEvent onAdd={(e) => setPlan({ ...plan, events: [...plan.events, e] })} />
+        </Card>
+        <div className="col">
+          <Card title="확인할 것" value={`${left}개 남음`}>
+            <Checklist items={checks.items} onChange={(next) => setChecks({ ...checks, items: next })} />
+          </Card>
+          <Card title="참고 링크">
+            <Links links={checks.links} onChange={(next) => setChecks({ ...checks, links: next })} />
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
