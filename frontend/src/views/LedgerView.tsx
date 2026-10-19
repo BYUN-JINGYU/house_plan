@@ -1,4 +1,4 @@
-// 가계부: 달 고르기 + 숫자 세 개 | 적기, 목록 | 분류별, 최근 달, 생활비 평균
+// 가계부: 달 고르기 + 숫자 세 개 / 적기 | 생활비 평균 / 이 달 기록 / 분류별 | 최근 달
 import { useState } from 'react';
 import { setOverride } from '../domain/edit';
 import { wonFull } from '../domain/format';
@@ -11,7 +11,7 @@ import { useLedger } from '../state/useLedger';
 import { Card, Stat } from '../ui/bits';
 import { EntryForm } from './ledger/EntryForm';
 import { EntryList } from './ledger/EntryList';
-import { LedgerSide } from './ledger/LedgerSide';
+import { CategoryCard, LivingCard, RecentCard } from './ledger/LedgerCards';
 
 export function LedgerView() {
   const [month, setMonth] = useState(() => monthOf(todayKst()));
@@ -46,16 +46,16 @@ export function LedgerView() {
         <p className="note bad">{led.message} <button type="button" className="linkish" onClick={led.reload}>다시 불러오기</button></p>
       )}
       <div className="grid">
-        <div className="col">
-          <EntryForm month={month} names={plan.names} editing={editing} onSubmit={submit} onCancel={() => setEditing(null)} />
-          <Card title="이 달 기록" value={`${inMonth.length}건`}>
-            <EntryList entries={inMonth} names={plan.names} onEdit={setEditing} onRemove={(id) => void led.remove(id)} />
-          </Card>
-        </div>
-        <div className="col">
-          <LedgerSide entries={led.entries} months={led.months} month={month} living={model.a.living}
-            onUseLiving={(v) => setPlan(setOverride(plan, 'living', v))} />
-        </div>
+        <EntryForm month={month} names={plan.names} editing={editing} onSubmit={submit} onCancel={() => setEditing(null)} />
+        <LivingCard entries={led.entries} months={led.months} living={model.a.living}
+          onUseLiving={(v) => setPlan(setOverride(plan, 'living', v))} />
+      </div>
+      <Card title="이 달 기록" value={`${inMonth.length}건`}>
+        <EntryList entries={inMonth} names={plan.names} onEdit={setEditing} onRemove={(id) => void led.remove(id)} />
+      </Card>
+      <div className="grid even">
+        <CategoryCard entries={led.entries} month={month} />
+        <RecentCard entries={led.entries} months={led.months} />
       </div>
     </div>
   );

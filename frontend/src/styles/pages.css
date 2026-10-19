@@ -20,8 +20,8 @@
 .asset-list li:first-child { border-top: 0; }
 .asset-list strong { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .asset-list .linkish { font-size: 16px; padding: 10px 0; }
-.quick .fld-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 18px 0 8px; font-weight: 700; }
-.quick .fld-row:first-of-type { margin-top: 4px; }
+.quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 20px 40px; }
+.quick .fld-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; min-height: 28px; margin: 0 0 8px; font-weight: 700; }
 .quick output { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
 
 .edit-list .line { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
@@ -83,7 +83,7 @@
 .timeline .pin .when, .timeline .pin .what { color: var(--accent); font-weight: 800; }
 .timeline .past .when, .timeline .past .what { color: var(--muted); }
 .done-mark { margin-right: 6px; color: var(--good); font-weight: 800; }
-.checkgroup + .checkgroup { margin-top: 16px; }
+.checkgroups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px 32px; align-items: start; }
 .group-title { font-size: var(--t-small); font-weight: 700; color: var(--ink-2); margin-bottom: 4px; }
 .checks li { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--line); }
 .check { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer; }

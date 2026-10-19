@@ -23,15 +23,11 @@ export function SummaryView({ go }: { go: (tab: TabId) => void }) {
       )}
       <Verdict s={s} c={c} alt={alt} />
       <div className="grid">
-        <div className="col">
-          <FundingBar s={s} c={c} />
-          <SummaryTiles s={s} o={o} />
-        </div>
-        <div className="col">
-          <AssetMini hh={hh} names={plan.names} quotes={quotes} go={go} />
-          <QuickControls plan={plan} setPlan={setPlan} a={a} />
-        </div>
+        <FundingBar s={s} c={c} />
+        <AssetMini hh={hh} names={plan.names} quotes={quotes} go={go} />
       </div>
+      <SummaryTiles s={s} o={o} />
+      <QuickControls plan={plan} setPlan={setPlan} a={a} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 /* 카드와 숫자: 카드 하나에 숫자 하나, 줄 목록, 크기 비교 막대, 범례 */
-.grid { display: grid; gap: var(--gap); grid-template-columns: minmax(0, 1fr); align-items: start; }
+.grid { display: grid; gap: var(--gap); grid-template-columns: minmax(0, 1fr); align-items: stretch; }
 /* 옆 막대(252px)가 생기는 1000px부터는 본문이 좁아서, 두 칸은 1100px부터 */
 @media (min-width: 1100px) {
   .grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }

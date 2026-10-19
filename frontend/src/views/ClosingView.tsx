@@ -1,4 +1,4 @@
-// 잔금: 계산식 한 장 | 부대비용 막대, 계약금
+// 잔금: 계산식 | 부대비용 막대, 모을 돈 | 계약금 (한 줄의 두 카드는 높이를 맞춘다)
 import type { Closing } from '../domain/closing';
 import { pct, won } from '../domain/format';
 import type { Scenario } from '../domain/scenario';
@@ -6,7 +6,8 @@ import { dateLabel } from '../domain/schedule';
 import { useSyncs } from '../state/DataProvider';
 import { useModel } from '../state/ModelProvider';
 import { useDocSync } from '../state/sync';
-import { Card, HBars, More, PageHead, Rows, type Row } from '../ui/bits';
+import { Card, HBars, PageHead, Rows, type Row } from '../ui/bits';
+import { InflowCard } from './closing/InflowCard';
 
 const tone = (v: number) => (v >= 0 ? 'good' : 'bad');
 
@@ -47,7 +48,6 @@ export function ClosingView() {
   const { model } = useModel();
   const [plan, setPlan] = useDocSync(useSyncs().plan);
   const { s, c } = model;
-  const i = c.inflows;
   const has = c.have > 0;
   return (
     <div className="page">
@@ -55,32 +55,27 @@ export function ClosingView() {
       <div className="grid even">
         <Card title="계산식" value={won(c.reqAll)}>
           <Rows rows={receipt(s, c)} />
-          <More label="모을 돈 자세히">
-            <p>월급 저축 {won(i.save)} ({s.monthsLeft}번)</p>
-            <p>PS {won(i.ps)}, PI {won(i.pi)}, 명절 근무비 {won(i.holiday)}</p>
-            <p>이미 받은 돈은 통장 잔액에 있다고 보고 빼요.</p>
-            <p>특별성과급은 잔금 뒤라 넣지 않았어요.</p>
-          </More>
         </Card>
-        <div className="col">
-          <Card title="부대비용" value={won(c.costSum)}>
-            <HBars items={costs(s, c)} label="부대비용 큰 순서" />
-          </Card>
-          <Card title={`${dateLabel(s.depositDate)} 계약금`} value={won(c.deposit)}>
-            {plan.depositPaid ? (
-              <p className="sub">냈어요. 지금 자산에서 이미 빠진 것으로 계산해요.</p>
-            ) : (
-              <Rows rows={[
-                { label: '그때까지 쓸 수 있는 돈', note: `지금 자산 + 월급 ${s.depMonths}번${s.depPiDue ? ' + PI' : ''}`, value: has ? won(c.depCash) : '자산 입력 전' },
-                gapRow(has, c.depGap),
-              ]} />
-            )}
-            <label className="check-line">
-              <input type="checkbox" checked={plan.depositPaid} onChange={(e) => setPlan({ ...plan, depositPaid: e.target.checked })} />
-              계약금 냈어요
-            </label>
-          </Card>
-        </div>
+        <Card title="부대비용" value={won(c.costSum)}>
+          <HBars items={costs(s, c)} label="부대비용 큰 순서" />
+        </Card>
+      </div>
+      <div className="grid even">
+        <InflowCard s={s} c={c} />
+        <Card title={`${dateLabel(s.depositDate)} 계약금`} value={won(c.deposit)}>
+          {plan.depositPaid ? (
+            <p className="sub">냈어요. 지금 자산에서 이미 빠진 것으로 계산해요.</p>
+          ) : (
+            <Rows rows={[
+              { label: '그때까지 쓸 수 있는 돈', note: `지금 자산 + 월급 ${s.depMonths}번${s.depPiDue ? ' + PI' : ''}`, value: has ? won(c.depCash) : '자산 입력 전' },
+              gapRow(has, c.depGap),
+            ]} />
+          )}
+          <label className="check-line">
+            <input type="checkbox" checked={plan.depositPaid} onChange={(e) => setPlan({ ...plan, depositPaid: e.target.checked })} />
+            계약금 냈어요
+          </label>
+        </Card>
       </div>
     </div>
   );
